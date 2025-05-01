@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
 
-export function CategoryFilter() {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+interface CategoryFilterProps {
+  onCategoryChange?: (categories: string[]) => void;
+  initialCategories?: string[];
+}
+
+export function CategoryFilter({ onCategoryChange, initialCategories = [] }: CategoryFilterProps) {
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategories);
 
   const categories = [
     "수학",
@@ -20,10 +25,24 @@ export function CategoryFilter() {
   ];
 
   const toggleCategory = (category: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
-    );
+    const newCategories = selectedCategories.includes(category)
+      ? selectedCategories.filter((c) => c !== category)
+      : [...selectedCategories, category];
+
+    setSelectedCategories(newCategories);
+
+    // 부모 컴포넌트에 변경 사항 알림
+    if (onCategoryChange) {
+      onCategoryChange(newCategories);
+    }
   };
+
+  // 초기 카테고리 설정 (최초 렌더링 시에만 실행)
+  useEffect(() => {
+    if (initialCategories && initialCategories.length > 0) {
+      setSelectedCategories(initialCategories);
+    }
+  }, []); // 의존성 배열에서 initialCategories 제거
 
   return (
     <div className="space-y-3">

@@ -1,7 +1,4 @@
-"use client";
-
 import type React from "react";
-
 import { useState } from "react";
 import { Layout } from "../components/layout";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
@@ -12,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { MarkdownEditor } from "../components/markdown-editor";
+import { TagInput } from "../components/tag-input";
+import { FileUpload } from "../components/file-upload";
 
 export default function CommunityNewPage() {
   const navigate = useNavigate();
@@ -19,8 +18,38 @@ export default function CommunityNewPage() {
     title: "",
     category: "",
     content: "",
-    tags: "",
+    tags: [] as string[],
+    files: [] as File[],
   });
+
+  // 추천 태그 목록 (실제 구현에서는 API에서 가져옴)
+  const suggestedTags = [
+    "질문",
+    "정보공유",
+    "스터디모집",
+    "프로젝트",
+    "취업",
+    "대학원",
+    "수학",
+    "물리학",
+    "화학",
+    "생물학",
+    "컴퓨터공학",
+    "전자공학",
+    "기계공학",
+    "경영학",
+    "경제학",
+    "심리학",
+    "사회학",
+    "인문학",
+    "예술",
+    "교육",
+    "의학",
+    "약학",
+    "간호학",
+    "법학",
+    "행정학",
+  ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,8 +60,23 @@ export default function CommunityNewPage() {
     setFormData((prev) => ({ ...prev, content: value }));
   };
 
+  const handleTagsChange = (tags: string[]) => {
+    setFormData((prev) => ({ ...prev, tags }));
+  };
+
   const handleCategoryChange = (value: string) => {
     setFormData((prev) => ({ ...prev, category: value }));
+  };
+
+  const handleFilesUpload = (files: File[]) => {
+    setFormData((prev) => ({ ...prev, files }));
+  };
+
+  const handleFileRemove = (file: File) => {
+    setFormData((prev) => ({
+      ...prev,
+      files: prev.files.filter((f) => f !== file),
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,14 +141,31 @@ export default function CommunityNewPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="tags">태그</Label>
-                  <Input
-                    id="tags"
-                    name="tags"
-                    placeholder="관련 태그를 쉼표로 구분하여 입력하세요 (예: 수학, 스터디, 질문)"
-                    value={formData.tags}
-                    onChange={handleChange}
+                  <Label htmlFor="files">첨부 파일</Label>
+                  <FileUpload
+                    value={formData.files}
+                    onUpload={handleFilesUpload}
+                    onRemove={handleFileRemove}
+                    accept="image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                    maxSize={5}
+                    maxFiles={3}
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    이미지, PDF, 문서 파일을 첨부할 수 있습니다. 최대 3개, 각 파일당 최대 5MB까지 가능합니다.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="tags">태그</Label>
+                  <TagInput
+                    value={formData.tags}
+                    onChange={handleTagsChange}
+                    placeholder="태그를 입력하세요 (Enter로 추가)"
+                    suggestions={suggestedTags}
+                    maxTags={5}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    최대 5개의 태그를 추가할 수 있습니다. 관련 태그를 추가하면 더 많은 사용자에게 글이 노출됩니다.
+                  </p>
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">

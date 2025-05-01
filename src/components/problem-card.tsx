@@ -1,8 +1,7 @@
 import { Link } from "react-router";
+import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
-import { Card, CardContent, CardFooter } from "./ui/card";
-import { ThumbsUp, MessageSquare, CheckCircle } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { MessageSquare, ThumbsUp } from "lucide-react";
 
 interface Problem {
   id: number;
@@ -13,6 +12,7 @@ interface Problem {
   likes: number;
   comments: number;
   solved: boolean;
+  tags?: string[];
 }
 
 interface ProblemCardProps {
@@ -22,51 +22,59 @@ interface ProblemCardProps {
 export function ProblemCard({ problem }: ProblemCardProps) {
   return (
     <Link to={`/problems/${problem.id}`}>
-      <Card className="overflow-hidden border-none shadow-md hover:shadow-lg dark:shadow-gray-800/30 transition-all duration-300 w-full">
-        <CardContent className="p-5">
-          <div className="flex justify-between items-start">
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 font-medium">
+      <Card className="overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow duration-300 dark:shadow-gray-800/30">
+        <CardContent className="p-4">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <Badge
+                  variant="outline"
+                  className={`${
+                    problem.solved
+                      ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                      : "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
+                  }`}
+                >
+                  {problem.solved ? "해결됨" : "미해결"}
+                </Badge>
+                <Badge variant="secondary" className="bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400">
                   {problem.category}
                 </Badge>
-                {problem.solved && (
-                  <Badge
-                    variant="secondary"
-                    className="flex items-center gap-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                  >
-                    <CheckCircle className="h-3 w-3" /> 해결됨
-                  </Badge>
-                )}
               </div>
-              <h3 className="font-semibold text-lg mb-2 hover:text-teal-500 transition-colors">{problem.title}</h3>
+              <h3 className="text-lg font-semibold mb-1 line-clamp-2">{problem.title}</h3>
+              <div className="flex items-center text-sm text-muted-foreground">
+                <span>{problem.author}</span>
+                <span className="mx-2">•</span>
+                <span>{problem.date}</span>
+              </div>
+
+              {/* 태그 표시 */}
+              {problem.tags && problem.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {problem.tags.map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant="secondary"
+                      className="bg-gray-100 text-gray-800 text-xs dark:bg-gray-800 dark:text-gray-200"
+                    >
+                      #{tag}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
+            <div className="flex items-center">
+              <ThumbsUp className="h-4 w-4 mr-1" />
+              <span>{problem.likes}</span>
+            </div>
+            <div className="flex items-center">
+              <MessageSquare className="h-4 w-4 mr-1" />
+              <span>{problem.comments}</span>
             </div>
           </div>
         </CardContent>
-        <CardFooter className="p-5 pt-0 text-sm text-muted-foreground bg-gray-50/50 dark:bg-gray-900/50">
-          <div className="flex justify-between w-full">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
-                <ThumbsUp className="h-4 w-4" />
-                <span>{problem.likes}</span>
-              </div>
-              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
-                <MessageSquare className="h-4 w-4" />
-                <span>{problem.comments}</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Avatar className="h-6 w-6">
-                <AvatarImage
-                  src={`/abstract-geometric-shapes.png?key=fzjld&height=32&width=32&query=${problem.author}`}
-                  alt={problem.author}
-                />
-                <AvatarFallback>{problem.author.substring(0, 2).toUpperCase()}</AvatarFallback>
-              </Avatar>
-              <span className="text-gray-600 dark:text-gray-400">{problem.date}</span>
-            </div>
-          </div>
-        </CardFooter>
       </Card>
     </Link>
   );

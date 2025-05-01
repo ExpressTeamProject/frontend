@@ -22,137 +22,6 @@ import {
 export default function UserProfilePage() {
   const { username } = useParams<{ username: string }>();
 
-  // 실제 구현에서는 username을 사용하여 사용자 데이터를 가져옵니다
-  const user = {
-    id: 1,
-    username: username || "mathprofessor",
-    displayName: "수학 교수",
-    avatar: "/musical-performance.png",
-    bio: "수학과 교수로 미분방정식과 선형대수학을 가르치고 있습니다. 학생들의 질문에 답변하고 도움을 주는 것을 좋아합니다.",
-    major: "수학",
-    joinDate: "2023-01-15",
-    email: "math.professor@example.com",
-    stats: {
-      problems: 24,
-      solutions: 87,
-      posts: 35,
-      reputation: 1850,
-    },
-    badges: {
-      gold: 5,
-      silver: 12,
-      bronze: 24,
-    },
-    isCurrentUser: true,
-  };
-
-  // 사용자가 작성한 문제 샘플 데이터
-  const userProblems = [
-    {
-      id: 1,
-      title: "미분방정식의 일반해 구하기",
-      category: "수학",
-      author: user.username,
-      date: "2023-04-28",
-      likes: 24,
-      comments: 8,
-      solved: true,
-    },
-    {
-      id: 3,
-      title: "선형대수학 고유값 문제",
-      category: "수학",
-      author: user.username,
-      date: "2023-04-22",
-      likes: 17,
-      comments: 9,
-      solved: true,
-    },
-  ];
-
-  // 사용자가 해결한 문제 샘플 데이터
-  const solvedProblems = [
-    {
-      id: 2,
-      title: "뉴턴의 운동법칙 적용 문제",
-      category: "물리학",
-      author: "physicslover",
-      date: "2023-04-27",
-      likes: 18,
-      comments: 5,
-      solved: true,
-    },
-    {
-      id: 4,
-      title: "유기화학 반응 메커니즘 설명",
-      category: "화학",
-      author: "chemistrywhiz",
-      date: "2023-04-25",
-      likes: 15,
-      comments: 3,
-      solved: true,
-    },
-  ];
-
-  // 사용자가 작성한 커뮤니티 게시글 샘플 데이터
-  const userPosts = [
-    {
-      id: 1,
-      title: "미분방정식 공부 방법 추천",
-      category: "정보",
-      date: "2023-05-02",
-      likes: 32,
-      comments: 14,
-    },
-    {
-      id: 2,
-      title: "수학과 대학원 진학 조언",
-      category: "정보",
-      date: "2023-04-15",
-      likes: 28,
-      comments: 21,
-    },
-  ];
-
-  // 활동 로그 샘플 데이터
-  const activityLog = [
-    {
-      id: 1,
-      type: "problem",
-      action: "created",
-      title: "미분방정식의 일반해 구하기",
-      date: "2023-04-28",
-    },
-    {
-      id: 2,
-      type: "solution",
-      action: "submitted",
-      title: "뉴턴의 운동법칙 적용 문제",
-      date: "2023-04-27",
-    },
-    {
-      id: 3,
-      type: "post",
-      action: "created",
-      title: "미분방정식 공부 방법 추천",
-      date: "2023-05-02",
-    },
-    {
-      id: 4,
-      type: "comment",
-      action: "commented",
-      title: "유기화학 반응 메커니즘 설명",
-      date: "2023-04-26",
-    },
-    {
-      id: 5,
-      type: "badge",
-      action: "earned",
-      title: "해결사 골드 배지",
-      date: "2023-04-25",
-    },
-  ];
-
   return (
     <Layout>
       <div className="container py-8 px-4 md:px-8 max-w-full mx-auto">
@@ -185,9 +54,11 @@ export default function UserProfilePage() {
                       <p className="text-muted-foreground">@{user.username}</p>
                     </div>
                     {user.isCurrentUser ? (
-                      <Button className="mt-2 md:mt-0 bg-teal-500 hover:bg-teal-600 transition-colors">
-                        <Edit className="mr-2 h-4 w-4" /> 프로필 편집
-                      </Button>
+                      <Link to={`/user/${user.username}/edit`}>
+                        <Button className="mt-2 md:mt-0 bg-teal-500 hover:bg-teal-600 transition-colors">
+                          <Edit className="mr-2 h-4 w-4" /> 프로필 편집
+                        </Button>
+                      </Link>
                     ) : (
                       <Button className="mt-2 md:mt-0 bg-teal-500 hover:bg-teal-600 transition-colors">
                         <Mail className="mr-2 h-4 w-4" /> 메시지 보내기
@@ -399,3 +270,134 @@ export default function UserProfilePage() {
     </Layout>
   );
 }
+
+// 실제 구현에서는 username을 사용하여 사용자 데이터를 가져옵니다
+const user = {
+  id: 1,
+  username: "mathprofessor",
+  displayName: "수학 교수",
+  avatar: "/musical-performance.png",
+  bio: "수학과 교수로 미분방정식과 선형대수학을 가르치고 있습니다. 학생들의 질문에 답변하고 도움을 주는 것을 좋아합니다.",
+  major: "수학",
+  joinDate: "2023-01-15",
+  email: "math.professor@example.com",
+  stats: {
+    problems: 24,
+    solutions: 87,
+    posts: 35,
+    reputation: 1850,
+  },
+  badges: {
+    gold: 5,
+    silver: 12,
+    bronze: 24,
+  },
+  isCurrentUser: true,
+};
+
+// 사용자가 작성한 문제 샘플 데이터
+const userProblems = [
+  {
+    id: 1,
+    title: "미분방정식의 일반해 구하기",
+    category: "수학",
+    author: user.username,
+    date: "2023-04-28",
+    likes: 24,
+    comments: 8,
+    solved: true,
+  },
+  {
+    id: 3,
+    title: "선형대수학 고유값 문제",
+    category: "수학",
+    author: user.username,
+    date: "2023-04-22",
+    likes: 17,
+    comments: 9,
+    solved: true,
+  },
+];
+
+// 사용자가 해결한 문제 샘플 데이터
+const solvedProblems = [
+  {
+    id: 2,
+    title: "뉴턴의 운동법칙 적용 문제",
+    category: "물리학",
+    author: "physicslover",
+    date: "2023-04-27",
+    likes: 18,
+    comments: 5,
+    solved: true,
+  },
+  {
+    id: 4,
+    title: "유기화학 반응 메커니즘 설명",
+    category: "화학",
+    author: "chemistrywhiz",
+    date: "2023-04-25",
+    likes: 15,
+    comments: 3,
+    solved: true,
+  },
+];
+
+// 사용자가 작성한 커뮤니티 게시글 샘플 데이터
+const userPosts = [
+  {
+    id: 1,
+    title: "미분방정식 공부 방법 추천",
+    category: "정보",
+    date: "2023-05-02",
+    likes: 32,
+    comments: 14,
+  },
+  {
+    id: 2,
+    title: "수학과 대학원 진학 조언",
+    category: "정보",
+    date: "2023-04-15",
+    likes: 28,
+    comments: 21,
+  },
+];
+
+// 활동 로그 샘플 데이터
+const activityLog = [
+  {
+    id: 1,
+    type: "problem",
+    action: "created",
+    title: "미분방정식의 일반해 구하기",
+    date: "2023-04-28",
+  },
+  {
+    id: 2,
+    type: "solution",
+    action: "submitted",
+    title: "뉴턴의 운동법칙 적용 문제",
+    date: "2023-04-27",
+  },
+  {
+    id: 3,
+    type: "post",
+    action: "created",
+    title: "미분방정식 공부 방법 추천",
+    date: "2023-05-02",
+  },
+  {
+    id: 4,
+    type: "comment",
+    action: "commented",
+    title: "유기화학 반응 메커니즘 설명",
+    date: "2023-04-26",
+  },
+  {
+    id: 5,
+    type: "badge",
+    action: "earned",
+    title: "해결사 골드 배지",
+    date: "2023-04-25",
+  },
+];

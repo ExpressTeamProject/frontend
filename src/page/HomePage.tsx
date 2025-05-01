@@ -7,64 +7,65 @@ import { CategoryFilter } from "../components/category-filter";
 import { BookOpen, Plus, TrendingUp, CheckCircle, Clock } from "lucide-react";
 import { Layout } from "../components/layout";
 
+// 샘플 문제 데이터
+const problems = [
+  {
+    id: 1,
+    title: "미분방정식의 일반해 구하기",
+    category: "수학",
+    author: "mathprofessor",
+    date: "2023-04-28",
+    likes: 24,
+    comments: 8,
+    solved: true,
+  },
+  {
+    id: 2,
+    title: "뉴턴의 운동법칙 적용 문제",
+    category: "물리학",
+    author: "physicslover",
+    date: "2023-04-27",
+    likes: 18,
+    comments: 5,
+    solved: false,
+  },
+  {
+    id: 3,
+    title: "알고리즘 복잡도 분석 문제",
+    category: "컴퓨터공학",
+    author: "codemaster",
+    date: "2023-04-26",
+    likes: 32,
+    comments: 12,
+    solved: true,
+  },
+  {
+    id: 4,
+    title: "유기화학 반응 메커니즘 설명",
+    category: "화학",
+    author: "chemistrywhiz",
+    date: "2023-04-25",
+    likes: 15,
+    comments: 3,
+    solved: false,
+  },
+];
+
+// 인기 카테고리
+const popularCategories = [
+  { name: "수학", icon: "📊", color: "bg-blue-100 dark:bg-blue-900" },
+  { name: "물리학", icon: "🔭", color: "bg-purple-100 dark:bg-purple-900" },
+  { name: "컴퓨터공학", icon: "💻", color: "bg-green-100 dark:bg-green-900" },
+  { name: "화학", icon: "🧪", color: "bg-yellow-100 dark:bg-yellow-900" },
+  { name: "생물학", icon: "🧬", color: "bg-red-100 dark:bg-red-900" },
+  { name: "전자공학", icon: "⚡", color: "bg-orange-100 dark:bg-orange-900" },
+];
+
 export default function HomePage() {
-  // 샘플 문제 데이터
-  const problems = [
-    {
-      id: 1,
-      title: "미분방정식의 일반해 구하기",
-      category: "수학",
-      author: "mathprofessor",
-      date: "2023-04-28",
-      likes: 24,
-      comments: 8,
-      solved: true,
-    },
-    {
-      id: 2,
-      title: "뉴턴의 운동법칙 적용 문제",
-      category: "물리학",
-      author: "physicslover",
-      date: "2023-04-27",
-      likes: 18,
-      comments: 5,
-      solved: false,
-    },
-    {
-      id: 3,
-      title: "알고리즘 복잡도 분석 문제",
-      category: "컴퓨터공학",
-      author: "codemaster",
-      date: "2023-04-26",
-      likes: 32,
-      comments: 12,
-      solved: true,
-    },
-    {
-      id: 4,
-      title: "유기화학 반응 메커니즘 설명",
-      category: "화학",
-      author: "chemistrywhiz",
-      date: "2023-04-25",
-      likes: 15,
-      comments: 3,
-      solved: false,
-    },
-  ];
-
-  // 인기 카테고리
-  const popularCategories = [
-    { name: "수학", icon: "📊", color: "bg-blue-100 dark:bg-blue-900" },
-    { name: "물리학", icon: "🔭", color: "bg-purple-100 dark:bg-purple-900" },
-    { name: "컴퓨터공학", icon: "💻", color: "bg-green-100 dark:bg-green-900" },
-    { name: "화학", icon: "🧪", color: "bg-yellow-100 dark:bg-yellow-900" },
-    { name: "생물학", icon: "🧬", color: "bg-red-100 dark:bg-red-900" },
-    { name: "전자공학", icon: "⚡", color: "bg-orange-100 dark:bg-orange-900" },
-  ];
-
   return (
     <Layout>
       <main className="flex-1">
+        {/* 메인 섹션 */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-teal-50 to-white dark:from-gray-900 dark:to-gray-950">
           <div className="container px-4 md:px-8 max-w-full mx-auto">
             <div className="flex flex-col items-center justify-center space-y-6 text-center">
@@ -109,6 +110,7 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* 카테고리 필터 및 인기 태그 */}
         <section className="container px-4 py-12 md:px-8 max-w-full mx-auto">
           <div className="flex flex-col md:flex-row gap-8">
             <div className="md:w-1/5 lg:w-1/6 space-y-6">
@@ -173,14 +175,17 @@ export default function HomePage() {
                 ))}
               </div>
               <div className="flex justify-center mt-8">
-                <Button variant="outline" className="rounded-full">
-                  더 보기
-                </Button>
+                <Link to="/problems">
+                  <Button variant="outline" className="rounded-full">
+                    더 보기
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
         </section>
 
+        {/* 커뮤니티 소개 */}
         <section className="py-16 bg-gradient-to-r from-teal-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
           <div className="container px-4 md:px-8 text-center max-w-full mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold mb-6">함께 성장하는 학습 커뮤니티</h2>

@@ -1,7 +1,4 @@
-"use client";
-
 import type React from "react";
-
 import { useState } from "react";
 import { Link } from "react-router";
 import { Button } from "../components/ui/button";
@@ -12,14 +9,56 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { ArrowLeft } from "lucide-react";
 import { Layout } from "../components/layout";
 import { MarkdownEditor } from "../components/markdown-editor";
+import { TagInput } from "../components/tag-input";
+import { FileUpload } from "../components/file-upload";
 
 export default function NewProblemPage() {
   const [formData, setFormData] = useState({
     title: "",
     category: "",
     content: "",
-    tags: "",
+    tags: [] as string[],
+    files: [] as File[],
   });
+
+  // 추천 태그 목록 (실제 구현에서는 API에서 가져옴)
+  const suggestedTags = [
+    "미분방정식",
+    "선형대수",
+    "확률론",
+    "통계학",
+    "해석학",
+    "대수학",
+    "기하학",
+    "위상수학",
+    "이산수학",
+    "수치해석",
+    "양자역학",
+    "전자기학",
+    "열역학",
+    "유체역학",
+    "광학",
+    "상대성이론",
+    "입자물리학",
+    "천체물리학",
+    "유기화학",
+    "무기화학",
+    "물리화학",
+    "분석화학",
+    "생화학",
+    "고분자화학",
+    "알고리즘",
+    "자료구조",
+    "운영체제",
+    "컴퓨터네트워크",
+    "데이터베이스",
+    "인공지능",
+    "기계학습",
+    "컴퓨터비전",
+    "자연어처리",
+    "웹개발",
+    "모바일개발",
+  ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -30,8 +69,23 @@ export default function NewProblemPage() {
     setFormData((prev) => ({ ...prev, content: value }));
   };
 
+  const handleTagsChange = (tags: string[]) => {
+    setFormData((prev) => ({ ...prev, tags }));
+  };
+
   const handleCategoryChange = (value: string) => {
     setFormData((prev) => ({ ...prev, category: value }));
+  };
+
+  const handleFilesUpload = (files: File[]) => {
+    setFormData((prev) => ({ ...prev, files }));
+  };
+
+  const handleFileRemove = (file: File) => {
+    setFormData((prev) => ({
+      ...prev,
+      files: prev.files.filter((f) => f !== file),
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -101,14 +155,31 @@ export default function NewProblemPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="tags">태그</Label>
-                  <Input
-                    id="tags"
-                    name="tags"
-                    placeholder="관련 태그를 쉼표로 구분하여 입력하세요 (예: 미분방정식, 해석학)"
-                    value={formData.tags}
-                    onChange={handleChange}
+                  <Label htmlFor="files">첨부 파일</Label>
+                  <FileUpload
+                    value={formData.files}
+                    onUpload={handleFilesUpload}
+                    onRemove={handleFileRemove}
+                    accept="image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                    maxSize={5}
+                    maxFiles={3}
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    이미지, PDF, 문서 파일을 첨부할 수 있습니다. 최대 3개, 각 파일당 최대 5MB까지 가능합니다.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="tags">태그</Label>
+                  <TagInput
+                    value={formData.tags}
+                    onChange={handleTagsChange}
+                    placeholder="태그를 입력하세요 (Enter로 추가)"
+                    suggestions={suggestedTags}
+                    maxTags={5}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    최대 5개의 태그를 추가할 수 있습니다. 태그는 문제를 분류하고 검색하는 데 도움이 됩니다.
+                  </p>
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
