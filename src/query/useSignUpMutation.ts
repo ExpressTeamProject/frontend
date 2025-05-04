@@ -1,4 +1,4 @@
-import { kyInstance } from '@/lib/axiosInstance'
+import { kyInstance } from '@/lib/kyInstance'
 import { useMutation } from '@tanstack/react-query'
 
 function useSignUpMutation() {
