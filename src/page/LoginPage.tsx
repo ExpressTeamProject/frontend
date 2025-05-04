@@ -1,20 +1,23 @@
 import type React from "react";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
 import { BookOpen, ArrowLeft } from "lucide-react";
+import useLoginMutation from "@/query/useLoginMutation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { mutate: login, isPending } = useLoginMutation();
 
+  const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 로그인 로직 구현
-    console.log("Login attempt with:", { email, password });
+
+    login({ email, password }, { onSuccess: () => navigate("/") });
   };
 
   return (
@@ -69,8 +72,12 @@ export default function LoginPage() {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4 pt-4">
-              <Button type="submit" className="w-full rounded-lg bg-teal-500 hover:bg-teal-600 transition-colors">
-                로그인
+              <Button
+                type="submit"
+                className="w-full rounded-lg bg-teal-500 hover:bg-teal-600 transition-colors"
+                onClick={() => {}}
+              >
+                {isPending ? "로그인 중..." : "로그인"}
               </Button>
               <div className="text-center text-sm">
                 계정이 없으신가요?{" "}

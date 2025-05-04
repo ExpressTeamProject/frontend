@@ -1,13 +1,13 @@
 import type React from "react";
 
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
 import { BookOpen, ArrowLeft } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
+import useSignUpMutation from "@/query/useSignUpMutation";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -15,22 +15,30 @@ export default function RegisterPage() {
     email: "",
     password: "",
     confirmPassword: "",
-    major: "",
+    nickname: "",
   });
 
+  /* username, email, password, nickname }*/
+  const { mutate: signup, isPending } = useSignUpMutation();
+
+  const navigate = useNavigate();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleMajorChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, major: value }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 회원가입 로직 구현
-    console.log("Registration with:", formData);
+
+    signup(
+      {
+        email: formData.email,
+        password: formData.password,
+        username: formData.username,
+        nickname: formData.nickname,
+      },
+      { onSuccess: () => navigate("/login") }
+    );
   };
 
   return (
@@ -68,6 +76,18 @@ export default function RegisterPage() {
                 />
               </div>
               <div className="space-y-2">
+                <Label htmlFor="nickname">별명</Label>
+                <Input
+                  id="nickname"
+                  name="nickname"
+                  placeholder="별명"
+                  value={formData.nickname}
+                  onChange={handleChange}
+                  required
+                  className="rounded-lg border-gray-300 dark:border-gray-700 focus-visible:ring-teal-500"
+                />
+              </div>
+              <div className="space-y-2">
                 <Label htmlFor="email">이메일</Label>
                 <Input
                   id="email"
@@ -79,28 +99,6 @@ export default function RegisterPage() {
                   required
                   className="rounded-lg border-gray-300 dark:border-gray-700 focus-visible:ring-teal-500"
                 />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="major">전공</Label>
-                <Select onValueChange={handleMajorChange}>
-                  <SelectTrigger className="rounded-lg border-gray-300 dark:border-gray-700 focus-visible:ring-teal-500">
-                    <SelectValue placeholder="전공 선택" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="math">수학</SelectItem>
-                    <SelectItem value="physics">물리학</SelectItem>
-                    <SelectItem value="chemistry">화학</SelectItem>
-                    <SelectItem value="biology">생물학</SelectItem>
-                    <SelectItem value="computer-science">컴퓨터공학</SelectItem>
-                    <SelectItem value="electrical-engineering">전자공학</SelectItem>
-                    <SelectItem value="mechanical-engineering">기계공학</SelectItem>
-                    <SelectItem value="business">경영학</SelectItem>
-                    <SelectItem value="economics">경제학</SelectItem>
-                    <SelectItem value="psychology">심리학</SelectItem>
-                    <SelectItem value="sociology">사회학</SelectItem>
-                    <SelectItem value="other">기타</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">비밀번호</Label>
@@ -128,7 +126,12 @@ export default function RegisterPage() {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4 pt-4">
-              <Button type="submit" className="w-full rounded-lg bg-teal-500 hover:bg-teal-600 transition-colors">
+              <Button
+                type="submit"
+                className="w-full rounded-lg bg-teal-500 hover:bg-teal-600 transition-colors"
+                onClick={() => {}}
+              >
+                {isPending ? "회원가입 중..." : "회원가입"}
                 회원가입
               </Button>
               <div className="text-center text-sm">
