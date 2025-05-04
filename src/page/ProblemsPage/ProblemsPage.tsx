@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
 import { Layout } from "../../components/layout";
 import { Button } from "../../components/ui/button";
@@ -7,87 +7,89 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { BookOpen, Filter, Plus, Search } from "lucide-react";
 import FilterSidebar from "./FilterSidebar";
 import { ProblemContainer } from "@/page/ProblemsPage/ProblemContainer";
+import { useProblemQuery } from "@/query/useProblemQuery";
 
-// 문제 타입 정의
-interface Problem {
-  id: number;
-  title: string;
-  category: string;
-  author: string;
-  date: string;
-  likes: number;
-  comments: number;
-  solved: boolean;
-  tags: string[];
+export interface PaginationQueryParams {
+  page: number;
+  limit?: number;
+  sortBy?: "latest";
 }
+const usePagination = (initial?: PaginationQueryParams) => {
+  const [page, setPage] = useState(initial?.page ?? 1);
+  const [limit, setLimit] = useState(initial?.limit ?? 20);
+  const [sortBy, setSortBy] = useState(initial?.sortBy ?? "latest");
+
+  return {
+    page,
+    limit,
+    sortBy,
+    setPage,
+    setLimit,
+    setSortBy,
+  };
+};
 
 export default function ProblemsPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("latest");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
-  const [filteredProblems, setFilteredProblems] = useState<Problem[]>([]);
 
-  // 필터링 로직 - useCallback으로 감싸서 무한 렌더링 방지
-  const filterProblems = useCallback(() => {
-    let result = [...problems];
+  const { page, limit, sortBy, setPage, setLimit, setSortBy } = usePagination({ page: 1 });
+  const { data: problems, isSuccess } = useProblemQuery({ page, limit, sortBy });
 
-    // 탭 필터링
-    if (activeTab === "solved") {
-      result = result.filter((problem) => problem.solved);
-    } else if (activeTab === "unsolved") {
-      result = result.filter((problem) => !problem.solved);
-    }
+  if (!isSuccess) return <div>Loading...</div>;
+  console.log(problems);
+  let result = [...problems.data];
 
-    // 상태 필터링
-    if (selectedStatus !== "all") {
-      result = result.filter(
-        (problem) =>
-          (selectedStatus === "solved" && problem.solved) || (selectedStatus === "unsolved" && !problem.solved)
-      );
-    }
+  // 탭 필터링
+  if (activeTab === "solved") {
+    result = result.filter((problem) => problem.solved);
+  } else if (activeTab === "unsolved") {
+    result = result.filter((problem) => !problem.solved);
+  }
 
-    // 카테고리 필터링
-    if (selectedCategories.length > 0) {
-      result = result.filter((problem) => selectedCategories.includes(problem.category));
-    }
+  // 상태 필터링
+  if (selectedStatus !== "all") {
+    result = result.filter(
+      (problem) => (selectedStatus === "solved" && problem.solved) || (selectedStatus === "unsolved" && !problem.solved)
+    );
+  }
 
-    // 태그 필터링
-    if (selectedTags.length > 0) {
-      result = result.filter((problem) => problem.tags && selectedTags.some((tag) => problem.tags?.includes(tag)));
-    }
+  // 카테고리 필터링
+  if (selectedCategories.length > 0) {
+    result = result.filter((problem) => selectedCategories.includes(problem.category));
+  }
 
-    // 검색어 필터링
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      result = result.filter(
-        (problem) =>
-          problem.title.toLowerCase().includes(query) ||
-          problem.category.toLowerCase().includes(query) ||
-          problem.author.toLowerCase().includes(query) ||
-          problem.tags?.some((tag) => tag.toLowerCase().includes(query))
-      );
-    }
+  // 태그 필터링
+  if (selectedTags.length > 0) {
+    result = result.filter((problem) => problem.tags && selectedTags.some((tag) => problem.tags?.includes(tag)));
+  }
 
-    // 정렬
-    if (sortBy === "latest") {
-      result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    } else if (sortBy === "popular") {
-      result.sort((a, b) => b.likes - a.likes);
-    } else if (sortBy === "comments") {
-      result.sort((a, b) => b.comments - a.comments);
-    }
+  // 검색어 필터링
+  if (searchQuery) {
+    const query = searchQuery.toLowerCase();
+    result = result.filter(
+      (problem) =>
+        problem.title.toLowerCase().includes(query) ||
+        problem.category.toLowerCase().includes(query) ||
+        problem.author.toLowerCase().includes(query) ||
+        problem.tags?.some((tag) => tag.toLowerCase().includes(query))
+    );
+  }
 
-    setFilteredProblems(result);
-  }, [activeTab, selectedCategories, selectedStatus, selectedTags, searchQuery, sortBy]);
+  // 정렬
+  if (sortBy === "latest") {
+    result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  } else if (sortBy === "popular") {
+    result.sort((a, b) => b.likes - a.likes);
+  } else if (sortBy === "comments") {
+    result.sort((a, b) => b.comments - a.comments);
+  }
 
-  // 필터링 실행
-  useEffect(() => {
-    filterProblems();
-  }, [filterProblems]);
+  const filteredProblems = result;
 
   // 카테고리 변경 핸들러
   const handleCategoryChange = (categories: string[]) => {
@@ -175,104 +177,20 @@ export default function ProblemsPage() {
             />
 
             {/* 문제 목록 */}
-            <ProblemContainer problems={filteredProblems} activeTab={activeTab} onTabChange={handleTabChange} />
+            <ProblemContainer
+              problems={filteredProblems}
+              currentPage={problems.pagination.currentPage}
+              lastPage={problems.pagination.totalPages}
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+              onPageChange={setPage}
+            />
           </div>
         </div>
       </div>
     </Layout>
   );
 }
-// 샘플 문제 데이터
-const problems = [
-  {
-    id: 1,
-    title: "미분방정식의 일반해 구하기",
-    category: "수학",
-    author: "mathprofessor",
-    date: "2023-04-28",
-    likes: 24,
-    comments: 8,
-    solved: true,
-    tags: ["미분방정식", "선형대수"],
-  },
-  {
-    id: 2,
-    title: "뉴턴의 운동법칙 적용 문제",
-    category: "물리학",
-    author: "physicslover",
-    date: "2023-04-27",
-    likes: 18,
-    comments: 5,
-    solved: false,
-    tags: ["역학", "운동법칙"],
-  },
-  {
-    id: 3,
-    title: "알고리즘 복잡도 분석 문제",
-    category: "컴퓨터공학",
-    author: "codemaster",
-    date: "2023-04-26",
-    likes: 32,
-    comments: 12,
-    solved: true,
-    tags: ["알고리즘", "데이터구조"],
-  },
-  {
-    id: 4,
-    title: "유기화학 반응 메커니즘 설명",
-    category: "화학",
-    author: "chemistrywhiz",
-    date: "2023-04-25",
-    likes: 15,
-    comments: 3,
-    solved: false,
-    tags: ["유기화학", "반응메커니즘"],
-  },
-  {
-    id: 5,
-    title: "세포 분열 과정 분석",
-    category: "생물학",
-    author: "bioresearcher",
-    date: "2023-04-24",
-    likes: 21,
-    comments: 7,
-    solved: true,
-    tags: ["세포학", "분자생물학"],
-  },
-  {
-    id: 6,
-    title: "전자기학 맥스웰 방정식 응용",
-    category: "물리학",
-    author: "electromagnetism",
-    date: "2023-04-23",
-    likes: 29,
-    comments: 14,
-    solved: false,
-    tags: ["전자기학", "맥스웰방정식"],
-  },
-  {
-    id: 7,
-    title: "선형대수학 고유값 문제",
-    category: "수학",
-    author: "linearalgebra",
-    date: "2023-04-22",
-    likes: 17,
-    comments: 9,
-    solved: true,
-    tags: ["선형대수", "고유값"],
-  },
-  {
-    id: 8,
-    title: "데이터베이스 정규화 과정 설명",
-    category: "컴퓨터공학",
-    author: "dbmaster",
-    date: "2023-04-21",
-    likes: 26,
-    comments: 11,
-    solved: false,
-    tags: ["데이터베이스", "정규화"],
-  },
-];
 
 // 인기 태그
 const popularTags = ["미분방정식", "알고리즘", "양자역학", "유기화학", "데이터구조", "열역학", "선형대수", "통계학"];

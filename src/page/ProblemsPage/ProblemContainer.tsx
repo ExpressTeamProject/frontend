@@ -1,26 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProblemCard } from "../../components/problem-card";
-
-interface Problem {
-  id: number;
-  title: string;
-  category: string;
-  author: string;
-  date: string;
-  likes: number;
-  comments: number;
-  solved: boolean;
-  tags: string[];
-}
+import { Problem } from "@/query/useProblemQuery";
 
 interface ProblemContainerProps {
   problems: Problem[];
   activeTab: string;
+  lastPage: number;
+  currentPage: number;
   onTabChange: (value: string) => void;
 }
 
-export function ProblemContainer({ problems: filteredProblems, activeTab, onTabChange }: ProblemContainerProps) {
+export function ProblemContainer({
+  problems: filteredProblems,
+  activeTab,
+  lastPage,
+  currentPage,
+  onTabChange,
+  onPageChange,
+}: ProblemContainerProps) {
   const handleTabChange = (value: string) => {
     onTabChange(value);
   };
@@ -91,19 +89,23 @@ export function ProblemContainer({ problems: filteredProblems, activeTab, onTabC
               <path d="m15 18-6-6 6-6" />
             </svg>
           </Button>
-          <Button variant="outline" size="sm" className="rounded-full">
-            1
-          </Button>
-          <Button variant="outline" size="sm" className="rounded-full bg-primary text-primary-foreground">
-            2
-          </Button>
-          <Button variant="outline" size="sm" className="rounded-full">
-            3
-          </Button>
-          <span className="mx-1">...</span>
-          <Button variant="outline" size="sm" className="rounded-full">
-            8
-          </Button>
+          {Array.from({ length: lastPage }, (_, index) => {
+            const isCurrentPage = currentPage === index + 1;
+            return (
+              <Button
+                key={index}
+                variant="outline"
+                size="sm"
+                className={`rounded-full hover:cursor-pointer ${
+                  isCurrentPage ? "bg-primary text-primary-foreground" : ""
+                }`}
+                onClick={() => onPageChange(index + 1)}
+              >
+                {index + 1}
+              </Button>
+            );
+          })}
+          {/* <span className="mx-1">...</span> */}
           <Button variant="outline" size="icon" className="rounded-full">
             <span className="sr-only">다음 페이지</span>
             <svg

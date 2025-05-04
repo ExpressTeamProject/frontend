@@ -6,11 +6,11 @@ import { MessageSquare, ThumbsUp } from "lucide-react";
 interface Problem {
   id: number;
   title: string;
-  category: string;
-  author: string;
-  date: string;
-  likes: number;
-  comments: number;
+  categories: string[];
+  author: { username: string };
+  createdAt: string;
+  likeCount: number;
+  commentCount: number;
   solved: boolean;
   tags?: string[];
 }
@@ -38,14 +38,14 @@ export function ProblemCard({ problem }: ProblemCardProps) {
                   {problem.solved ? "해결됨" : "미해결"}
                 </Badge>
                 <Badge variant="secondary" className="bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400">
-                  {problem.category}
+                  {problem.categories.map((category) => category).join(", ")}
                 </Badge>
               </div>
               <h3 className="text-lg font-semibold mb-1 line-clamp-2">{problem.title}</h3>
               <div className="flex items-center text-sm text-muted-foreground">
-                <span>{problem.author}</span>
+                <span>{problem.author.username}</span>
                 <span className="mx-2">•</span>
-                <span>{problem.date}</span>
+                <span>{new Date(problem.createdAt).toLocaleDateString()}</span>
               </div>
 
               {/* 태그 표시 */}
@@ -67,11 +67,11 @@ export function ProblemCard({ problem }: ProblemCardProps) {
           <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
             <div className="flex items-center">
               <ThumbsUp className="h-4 w-4 mr-1" />
-              <span>{problem.likes}</span>
+              <span>{problem.likeCount}</span>
             </div>
             <div className="flex items-center">
               <MessageSquare className="h-4 w-4 mr-1" />
-              <span>{problem.comments}</span>
+              <span>{problem.commentCount}</span>
             </div>
           </div>
         </CardContent>

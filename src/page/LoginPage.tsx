@@ -1,5 +1,4 @@
 import type React from "react";
-
 import { useState } from "react";
 import { Link } from "react-router";
 import { Button } from "../components/ui/button";
@@ -39,7 +38,7 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="email">이메일</Label>
                 <Input
@@ -69,7 +68,7 @@ export default function LoginPage() {
                 />
               </div>
             </CardContent>
-            <CardFooter className="flex flex-col space-y-4">
+            <CardFooter className="flex flex-col space-y-4 pt-4">
               <Button type="submit" className="w-full rounded-lg bg-teal-500 hover:bg-teal-600 transition-colors">
                 로그인
               </Button>

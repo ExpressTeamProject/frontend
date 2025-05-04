@@ -6,9 +6,10 @@ import { SearchBar } from "../components/search-bar";
 import { CategoryFilter } from "../components/category-filter";
 import { BookOpen, Plus, TrendingUp, CheckCircle, Clock } from "lucide-react";
 import { Layout } from "../components/layout";
-
+import { useQuery } from "@tanstack/react-query";
+import { useProblemQuery } from "@/query/useProblemQuery";
 // 샘플 문제 데이터
-const problems = [
+const problemsSample = [
   {
     id: 1,
     title: "미분방정식의 일반해 구하기",
@@ -62,6 +63,8 @@ const popularCategories = [
 ];
 
 export default function HomePage() {
+  const { data: problems, isSuccess } = useProblemQuery();
+
   return (
     <Layout>
       <main className="flex-1">
@@ -170,9 +173,7 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="grid gap-4">
-                {problems.map((problem) => (
-                  <ProblemCard key={problem.id} problem={problem} />
-                ))}
+                {isSuccess && problems.data.map((problem) => <ProblemCard key={problem.id} problem={problem} />)}
               </div>
               <div className="flex justify-center mt-8">
                 <Link to="/problems">

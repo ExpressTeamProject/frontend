@@ -12,6 +12,14 @@ import RankingPage from "./page/RankingPage/RankingPage";
 import UserProfilePage from "./page/UserProfilePage";
 import ProfileEditPage from "./page/ProfileEditPage";
 import SearchResultsPage from "./page/SearchResultPages/SearchResultsPage";
+import AboutPage from "./components/footer/AboutPage";
+import FeaturesPage from "./components/footer/FeaturesPage";
+import HelpPage from "./components/footer/HelpPage";
+import FAQPage from "./components/footer/FAQPage";
+import TermsPage from "./components/footer/TermsPage";
+import PrivacyPolicyPage from "./components/footer/PrivacyPolicyPage";
+import CookiePolicyPage from "./components/footer/CookiePolicyPage";
+import FAQDetailPage from "./components/footer/FAQDetailPage";
 
 function App() {
   return (
@@ -29,6 +37,14 @@ function App() {
       <Route path="/user/:username" element={<UserProfilePage />} />
       <Route path="/user/:username/edit" element={<ProfileEditPage />} />
       <Route path="/search" element={<SearchResultsPage />} /> {/** 메인페이지에서 검색시 페이지 */}
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/features" element={<FeaturesPage />} />
+      <Route path="/help" element={<HelpPage />} />
+      <Route path="/faq" element={<FAQPage />} />
+      <Route path="/faq/:id" element={<FAQDetailPage />} />
+      <Route path="/terms" element={<TermsPage />} />
+      <Route path="/privacy" element={<PrivacyPolicyPage />} />
+      <Route path="/cookies" element={<CookiePolicyPage />} />
     </Routes>
   );
 }

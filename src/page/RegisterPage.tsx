@@ -127,7 +127,7 @@ export default function RegisterPage() {
                 />
               </div>
             </CardContent>
-            <CardFooter className="flex flex-col space-y-4">
+            <CardFooter className="flex flex-col space-y-4 pt-4">
               <Button type="submit" className="w-full rounded-lg bg-teal-500 hover:bg-teal-600 transition-colors">
                 회원가입
               </Button>
