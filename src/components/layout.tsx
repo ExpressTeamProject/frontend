@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import Footer from "./footer";
 import MobileFooterNav from "./mobile-footer-nav";
+import useLoginStore from "@/store/useLoginStore";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,8 +18,9 @@ export function Layout({ children, hideFooter = false }: LayoutProps) {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [showFab, setShowFab] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  const { token } = useLoginStore();
+  const isLoggedIn = !!token;
   // 스크롤 이벤트 처리
   useEffect(() => {
     const handleScroll = () => {
@@ -82,13 +84,6 @@ export function Layout({ children, hideFooter = false }: LayoutProps) {
           <MobileNav />
         </div>
       </header>
-
-      {/* 테스트용 로그인/로그아웃 토글 버튼 */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <Button onClick={() => setIsLoggedIn(!isLoggedIn)} className="bg-teal-500 hover:bg-teal-600">
-          {isLoggedIn ? "로그아웃" : "로그인"} 테스트
-        </Button>
-      </div>
 
       {children}
 
