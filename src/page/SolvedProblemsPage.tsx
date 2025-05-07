@@ -7,78 +7,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
-import { CheckCircle, Search, Star, Trophy } from "lucide-react";
+import { CheckCircle, Search } from "lucide-react";
+import { PaginationQueryParams, usePagination } from "@/query/_common/usePagination";
+import { useProblemsQuery } from "@/query/useProblemsQuery";
+import { Problem } from "@/models/Problem";
+import { categories } from "@/constants/categories";
 
 export default function SolvedProblemsPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("latest");
-  const [categoryFilter, setCategoryFilter] = useState("all");
+  const pagination = usePagination({ page: 1, status: "solved" });
+  const { data: solvedProblemsRes, isSuccess } = useProblemsQuery(pagination);
 
-  // 샘플 해결된 문제 데이터
-  const solvedProblems = [
-    {
-      id: 1,
-      title: "미분방정식의 일반해 구하기",
-      category: "수학",
-      author: "mathprofessor",
-      solver: "student123",
-      solverAvatar: "/abstract-geometric-shapes.png",
-      date: "2023-04-28",
-      likes: 24,
-      quality: "gold",
-      description: "2차 상미분방정식의 일반해를 구하는 문제로, 특성방정식을 이용한 해법을 제시했습니다.",
-    },
-    {
-      id: 3,
-      title: "알고리즘 복잡도 분석 문제",
-      category: "컴퓨터공학",
-      author: "codemaster",
-      solver: "algorithmexpert",
-      solverAvatar: "/copper-wires-closeup.png",
-      date: "2023-04-26",
-      likes: 32,
-      quality: "silver",
-      description: "시간 복잡도와 공간 복잡도를 분석하여 최적의 알고리즘을 찾는 문제입니다.",
-    },
-    {
-      id: 5,
-      title: "세포 분열 과정 분석",
-      category: "생물학",
-      author: "bioresearcher",
-      solver: "cellbiology",
-      solverAvatar: "/musical-performance.png",
-      date: "2023-04-24",
-      likes: 21,
-      quality: "bronze",
-      description: "세포 분열 과정의 각 단계를 분석하고 특징을 설명하는 문제입니다.",
-    },
-    {
-      id: 7,
-      title: "선형대수학 고유값 문제",
-      category: "수학",
-      author: "linearalgebra",
-      solver: "matrixmaster",
-      solverAvatar: "/abstract-self-representation.png",
-      date: "2023-04-22",
-      likes: 17,
-      quality: "gold",
-      description: "행렬의 고유값과 고유벡터를 구하고 대각화하는 문제입니다.",
-    },
-  ];
-
-  // 품질 배지 색상 매핑
-  const qualityBadgeColors = {
-    gold: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
-    silver: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
-    bronze: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300",
-  };
-
-  // 품질 아이콘 매핑
-  const qualityIcons = {
-    gold: <Trophy className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />,
-    silver: <Star className="h-4 w-4 text-gray-600 dark:text-gray-400" />,
-    bronze: <CheckCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />,
-  };
+  if (!isSuccess) return <div>Loading...</div>;
+  const solvedProblems = solvedProblemsRes.data;
 
   return (
     <Layout>
@@ -103,12 +43,15 @@ export default function SolvedProblemsPage() {
                 type="search"
                 placeholder="해결된 문제 검색..."
                 className="pl-10 py-6 rounded-full border-gray-300 dark:border-gray-700 focus-visible:ring-teal-500"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={pagination.search}
+                onChange={(e) => pagination.setSearch(e.target.value)}
               />
             </div>
             <div className="flex gap-2">
-              <Select value={sortBy} onValueChange={setSortBy}>
+              <Select
+                value={pagination.sort}
+                onValueChange={(value) => pagination.setSort((value as PaginationQueryParams["sort"])!)}
+              >
                 <SelectTrigger className="w-[140px] rounded-full">
                   <SelectValue placeholder="정렬 기준" />
                 </SelectTrigger>
@@ -118,65 +61,27 @@ export default function SolvedProblemsPage() {
                   <SelectItem value="quality">품질순</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <Select value={pagination.categories[0]} onValueChange={(value) => pagination.setCategories([value])}>
                 <SelectTrigger className="w-[140px] rounded-full">
                   <SelectValue placeholder="카테고리" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">전체</SelectItem>
-                  <SelectItem value="math">수학</SelectItem>
-                  <SelectItem value="physics">물리학</SelectItem>
-                  <SelectItem value="chemistry">화학</SelectItem>
-                  <SelectItem value="biology">생물학</SelectItem>
-                  <SelectItem value="computer-science">컴퓨터공학</SelectItem>
+                  <SelectItem value="전체">전체</SelectItem>
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
 
-          {/* 탭 섹션 */}
-          <Tabs defaultValue="all" className="mb-6">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="all">전체</TabsTrigger>
-              <TabsTrigger value="gold">최고 품질</TabsTrigger>
-              <TabsTrigger value="silver">우수 품질</TabsTrigger>
-              <TabsTrigger value="bronze">일반 품질</TabsTrigger>
-            </TabsList>
-            <TabsContent value="all" className="mt-4">
-              <div className="grid gap-4">
-                {solvedProblems.map((problem) => (
-                  <SolvedProblemCard key={problem.id} problem={problem} />
-                ))}
-              </div>
-            </TabsContent>
-            <TabsContent value="gold" className="mt-4">
-              <div className="grid gap-4">
-                {solvedProblems
-                  .filter((problem) => problem.quality === "gold")
-                  .map((problem) => (
-                    <SolvedProblemCard key={problem.id} problem={problem} />
-                  ))}
-              </div>
-            </TabsContent>
-            <TabsContent value="silver" className="mt-4">
-              <div className="grid gap-4">
-                {solvedProblems
-                  .filter((problem) => problem.quality === "silver")
-                  .map((problem) => (
-                    <SolvedProblemCard key={problem.id} problem={problem} />
-                  ))}
-              </div>
-            </TabsContent>
-            <TabsContent value="bronze" className="mt-4">
-              <div className="grid gap-4">
-                {solvedProblems
-                  .filter((problem) => problem.quality === "bronze")
-                  .map((problem) => (
-                    <SolvedProblemCard key={problem.id} problem={problem} />
-                  ))}
-              </div>
-            </TabsContent>
-          </Tabs>
+          <div className="grid gap-4">
+            {solvedProblems.map((problem) => (
+              <SolvedProblemCard key={problem.id} problem={problem} />
+            ))}
+          </div>
 
           {/* 페이지네이션 */}
           <div className="flex justify-center mt-8">
@@ -230,33 +135,25 @@ export default function SolvedProblemsPage() {
 }
 
 // 해결된 문제 카드 컴포넌트
-function SolvedProblemCard({ problem }: { problem: any }) {
-  const qualityBadgeColors = {
-    gold: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
-    silver: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
-    bronze: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300",
-  };
-
-  const qualityIcons = {
-    gold: <Trophy className="h-4 w-4" />,
-    silver: <Star className="h-4 w-4" />,
-    bronze: <CheckCircle className="h-4 w-4" />,
-  };
-
+function SolvedProblemCard({ problem }: { problem: Problem }) {
   return (
     <Card className="overflow-hidden border-none shadow-md hover:shadow-lg dark:shadow-gray-800/30 transition-all duration-300">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <div className="flex flex-col">
-            <Badge variant="outline" className="self-start mb-2 bg-gray-50 dark:bg-gray-800">
-              {problem.category}
-            </Badge>
+            <div className="flex flex-wrap gap-2">
+              {problem.categories.map((category) => (
+                <Badge variant="outline" className="self-start mb-2 bg-gray-50 dark:bg-gray-800">
+                  {category}
+                </Badge>
+              ))}
+            </div>
             <CardTitle className="text-xl hover:text-teal-500 transition-colors">
               <a href={`/problems/${problem.id}`}>{problem.title}</a>
             </CardTitle>
-            <CardDescription className="mt-1 line-clamp-2">{problem.description}</CardDescription>
+            <CardDescription className="mt-0.5 line-clamp-2">{problem.content}</CardDescription>
           </div>
-          <Badge
+          {/* <Badge
             className={`flex items-center gap-1 ${
               qualityBadgeColors[problem.quality as keyof typeof qualityBadgeColors]
             }`}
@@ -265,7 +162,7 @@ function SolvedProblemCard({ problem }: { problem: any }) {
             <span>
               {problem.quality === "gold" ? "최고 품질" : problem.quality === "silver" ? "우수 품질" : "일반 품질"}
             </span>
-          </Badge>
+          </Badge> */}
         </div>
       </CardHeader>
       <CardContent>
@@ -273,11 +170,11 @@ function SolvedProblemCard({ problem }: { problem: any }) {
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">해결자:</span>
             <div className="flex items-center gap-2">
-              <Avatar className="h-6 w-6">
-                <AvatarImage src={problem.solverAvatar || "/placeholder.svg"} alt={problem.solver} />
-                <AvatarFallback>{problem.solver.substring(0, 2).toUpperCase()}</AvatarFallback>
+              <Avatar className="h-9 w-9">
+                <AvatarImage src={problem.author.profileImage || "/placeholder.svg"} alt={problem.author.nickname} />
+                <AvatarFallback>{problem.author.nickname.substring(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
-              <span className="text-sm font-medium">{problem.solver}</span>
+              <span className="text-sm font-medium">{problem.author.nickname}</span>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -297,7 +194,7 @@ function SolvedProblemCard({ problem }: { problem: any }) {
                 <path d="M7 10v12" />
                 <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z" />
               </svg>
-              <span>{problem.likes}</span>
+              <span>{problem.likeCount}</span>
             </Button>
             <Button variant="outline" size="sm" className="rounded-full">
               해결책 보기

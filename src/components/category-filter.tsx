@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
+import { categories } from "@/constants/categories";
 
 interface CategoryFilterProps {
   onCategoryChange?: (categories: string[]) => void;
@@ -9,20 +10,6 @@ interface CategoryFilterProps {
 
 export function CategoryFilter({ onCategoryChange, initialCategories = [] }: CategoryFilterProps) {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategories);
-
-  const categories = [
-    "수학",
-    "물리학",
-    "화학",
-    "생물학",
-    "컴퓨터공학",
-    "전자공학",
-    "기계공학",
-    "경영학",
-    "경제학",
-    "심리학",
-    "사회학",
-  ];
 
   const toggleCategory = (category: string) => {
     const newCategories = selectedCategories.includes(category)

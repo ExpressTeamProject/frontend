@@ -1,12 +1,18 @@
+import { Author } from "./Author";
+
 export interface Problem {
-  id: number;
+  id: string;
   title: string;
   categories: string[];
-  author: { username: string };
+  author: Author;
   createdAt: string;
+  updatedAt: string;
   likeCount: number;
   commentCount: number;
-  solved: boolean;
+  isSolved: boolean;
+  viewCount: number;
+  likes: Author[];
+  comments: Comment[];
   tags?: string[];
   content: string;
 }

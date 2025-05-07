@@ -7,50 +7,16 @@ import { ThumbsUp, MessageSquare, Share2, Bookmark, ArrowLeft } from "lucide-rea
 import { CommentSection } from "../components/comment-section";
 import { Layout } from "../components/layout";
 import { MarkdownViewer } from "../components/markdown-viewer";
-import { useQuery } from "@tanstack/react-query";
-import { kyInstance } from "@/lib/kyInstance";
-import { Problem } from "@/models/Problem";
-
-interface RestApiResponse<T> {
-  data: T;
-  success: boolean;
-}
-
-const useProblemDetailQuery = (id: string) => {
-  return useQuery({
-    queryKey: ["problem", id],
-    queryFn: () => kyInstance.get(`problems/${id}`).json() as Promise<RestApiResponse<Problem>>,
-  });
-};
+import { useProblemDetailQuery } from "@/query/useProblemDetailQuery";
 
 export default function ProblemDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: problemRes, isSuccess } = useProblemDetailQuery(id || "0");
 
-  // 실제 구현에서는 id를 사용하여 문제 데이터를 가져옵니다
-  //   const problem = {
-  //     id: Number.parseInt(id || "0"),
-  //     title: "미분방정식의 일반해 구하기",
-  //     category: "수학",
-  //     author: "mathprofessor",
-  //     authorAvatar: "/musical-performance.png",
-  //     date: "2023-04-28",
-  //     likes: 24,
-  //     content: `
-  // 다음 미분방정식의 일반해를 구하시오:
-
-  // $$\\frac{d^2y}{dx^2} + 4\\frac{dy}{dx} + 4y = 0$$
-
-  // 이 문제는 2차 상미분방정식으로, 특성방정식을 이용하여 해결할 수 있습니다.
-
-  // 힌트: 특성방정식은 $r^2 + 4r + 4 = 0$ 입니다.
-  //     `,
-  //     tags: ["미분방정식", "수학", "해석학"],
-  //     solved: true,
-  //   };
-  console.log(isSuccess, problemRes);
+  // TODO : 서버데이터 사용하게 수정
   if (!isSuccess) return <div>Loading...</div>;
   const problem = problemRes.data;
+
   return (
     <Layout>
       <main className="flex-1 container py-8 px-4 md:px-8 max-w-full mx-auto">
@@ -77,7 +43,7 @@ export default function ProblemDetailPage() {
                     {tag}
                   </Badge>
                 ))}
-                {problem.solved && (
+                {problem.isSolved && (
                   <Badge className="ml-auto bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
                     해결됨
                   </Badge>

@@ -7,93 +7,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { BookOpen, Filter, Plus, Search } from "lucide-react";
 import FilterSidebar from "./FilterSidebar";
 import { ProblemContainer } from "@/page/ProblemsPage/ProblemContainer";
-import { useProblemQuery } from "@/query/useProblemQuery";
-
-export interface PaginationQueryParams {
-  page: number;
-  limit?: number;
-  sortBy?: "latest" | "popular" | "comments";
-}
-const usePagination = (initial?: PaginationQueryParams) => {
-  const [page, setPage] = useState(initial?.page ?? 1);
-  const [limit, setLimit] = useState(initial?.limit ?? 20);
-  const [sortBy, setSortBy] = useState(initial?.sortBy ?? "latest");
-
-  return {
-    page,
-    limit,
-    sortBy,
-    setPage,
-    setLimit,
-    setSortBy,
-  };
-};
+import { usePagination } from "@/query/_common/usePagination";
 
 export default function ProblemsPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedStatus, setSelectedStatus] = useState<string>("all");
+  const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
 
-  const { page, limit, sortBy, setPage, setLimit, setSortBy } = usePagination({ page: 1 });
-  const { data: problems, isSuccess } = useProblemQuery({ page, limit, sortBy });
+  const pagination = usePagination({ page: 1 });
 
-  if (!isSuccess) return <div>Loading...</div>;
-  console.log(problems);
-  let result = [...problems.data];
-
-  // 탭 필터링
-  if (activeTab === "solved") {
-    result = result.filter((problem) => problem.solved);
-  } else if (activeTab === "unsolved") {
-    result = result.filter((problem) => !problem.solved);
-  }
-
-  // 상태 필터링
-  if (selectedStatus !== "all") {
-    result = result.filter(
-      (problem) => (selectedStatus === "solved" && problem.solved) || (selectedStatus === "unsolved" && !problem.solved)
-    );
-  }
-
-  // 카테고리 필터링
-  if (selectedCategories.length > 0) {
-    result = result.filter((problem) => selectedCategories.includes(problem.category));
-  }
-
-  // 태그 필터링
-  if (selectedTags.length > 0) {
-    result = result.filter((problem) => problem.tags && selectedTags.some((tag) => problem.tags?.includes(tag)));
-  }
-
-  // 검색어 필터링
-  if (searchQuery) {
-    const query = searchQuery.toLowerCase();
-    result = result.filter(
-      (problem) =>
-        problem.title.toLowerCase().includes(query) ||
-        problem.category.toLowerCase().includes(query) ||
-        problem.author.toLowerCase().includes(query) ||
-        problem.tags?.some((tag) => tag.toLowerCase().includes(query))
-    );
-  }
-
-  // 정렬
-  if (sortBy === "latest") {
-    result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  } else if (sortBy === "popular") {
-    result.sort((a, b) => b.likes - a.likes);
-  } else if (sortBy === "comments") {
-    result.sort((a, b) => b.comments - a.comments);
-  }
-
-  const filteredProblems = result;
-
+  console.log(pagination);
   // 카테고리 변경 핸들러
   const handleCategoryChange = (categories: string[]) => {
-    setSelectedCategories(categories);
+    pagination.setCategories(categories);
   };
 
   // 상태 변경 핸들러
@@ -145,12 +72,15 @@ export default function ProblemsPage() {
                 type="search"
                 placeholder="문제 검색..."
                 className="pl-10 py-6 rounded-full border-gray-300 dark:border-gray-700 focus-visible:ring-teal-500"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={pagination.search}
+                onChange={(e) => pagination.setSearch(e.target.value)}
               />
             </div>
             <div className="flex gap-2">
-              <Select value={sortBy} onValueChange={(value) => setSortBy(value as "latest" | "popular" | "comments")}>
+              <Select
+                value={pagination.sort}
+                onValueChange={(value) => pagination.setSort(value as "latest" | "popular" | "comments")}
+              >
                 <SelectTrigger className="w-[140px] rounded-full">
                   <SelectValue placeholder="정렬 기준" />
                 </SelectTrigger>
@@ -178,12 +108,10 @@ export default function ProblemsPage() {
 
             {/* 문제 목록 */}
             <ProblemContainer
-              problems={filteredProblems}
-              currentPage={problems.pagination.currentPage}
-              lastPage={problems.pagination.totalPages}
+              pagination={pagination}
               activeTab={activeTab}
               onTabChange={handleTabChange}
-              onPageChange={setPage}
+              onPageChange={pagination.setPage}
             />
           </div>
         </div>
@@ -193,4 +121,14 @@ export default function ProblemsPage() {
 }
 
 // 인기 태그
-const popularTags = ["미분방정식", "알고리즘", "양자역학", "유기화학", "데이터구조", "열역학", "선형대수", "통계학"];
+const popularTags = [
+  "미분방정식",
+  "알고리즘",
+  "양자역학",
+  "유기화학",
+  "데이터구조",
+  "열역학",
+  "선형대수",
+  "통계학",
+  "기타",
+];

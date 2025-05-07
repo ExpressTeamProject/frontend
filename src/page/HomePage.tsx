@@ -7,7 +7,7 @@ import { CategoryFilter } from "../components/category-filter";
 import { BookOpen, Plus, TrendingUp, CheckCircle, Clock } from "lucide-react";
 import { Layout } from "../components/layout";
 import { useQuery } from "@tanstack/react-query";
-import { useProblemQuery } from "@/query/useProblemQuery";
+import { useProblemsQuery } from "@/query/useProblemsQuery";
 // 샘플 문제 데이터
 const problemsSample = [
   {
@@ -63,7 +63,7 @@ const popularCategories = [
 ];
 
 export default function HomePage() {
-  const { data: problems, isSuccess } = useProblemQuery();
+  const { data: problems, isSuccess } = useProblemsQuery();
 
   return (
     <Layout>

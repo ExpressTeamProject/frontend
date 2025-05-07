@@ -6,19 +6,10 @@ import { Card, CardContent, CardFooter } from "./ui/card";
 import { ThumbsUp, MessageSquare, Flag, CornerDownRight } from "lucide-react";
 import { MarkdownEditor } from "./markdown-editor";
 import { MarkdownViewer } from "./markdown-viewer";
-
-interface Comment {
-  id: number;
-  author: string;
-  authorAvatar: string;
-  content: string;
-  date: string;
-  likes: number;
-  replies?: Comment[];
-}
+import { Comment } from "@/models/Comment";
 
 interface CommentSectionProps {
-  problemId: number;
+  problemId: Comment["id"];
 }
 
 export function CommentSection({ problemId }: CommentSectionProps) {

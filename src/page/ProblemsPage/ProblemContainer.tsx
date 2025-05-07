@@ -1,28 +1,27 @@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProblemCard } from "../../components/problem-card";
-import { Problem } from "@/query/useProblemQuery";
+import { useProblemsQuery } from "@/query/useProblemsQuery";
+import { PaginationQueryParams } from "@/query/_common/usePagination";
 
 interface ProblemContainerProps {
-  problems: Problem[];
   activeTab: string;
-  lastPage: number;
-  currentPage: number;
   onTabChange: (value: string) => void;
   onPageChange: (value: number) => void;
+  pagination: Required<PaginationQueryParams>;
 }
 
-export function ProblemContainer({
-  problems: filteredProblems,
-  activeTab,
-  lastPage,
-  currentPage,
-  onTabChange,
-  onPageChange,
-}: ProblemContainerProps) {
+export function ProblemContainer({ activeTab, pagination, onTabChange, onPageChange }: ProblemContainerProps) {
+  const { data: problems, isSuccess } = useProblemsQuery(pagination);
   const handleTabChange = (value: string) => {
     onTabChange(value);
   };
+
+  if (!isSuccess) return <div>Loading...</div>;
+
+  const filteredProblems = problems.data;
+  const lastPage = problems.pagination.totalPages;
+  const currentPage = problems.pagination.currentPage;
 
   return (
     <div className="flex-1">

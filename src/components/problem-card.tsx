@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { MessageSquare, ThumbsUp } from "lucide-react";
-import { Problem } from "@/query/useProblemQuery";
+import { Problem } from "@/query/useProblemsQuery";
 
 interface ProblemCardProps {
   problem: Problem;
