@@ -7,32 +7,50 @@ import { ThumbsUp, MessageSquare, Share2, Bookmark, ArrowLeft } from "lucide-rea
 import { CommentSection } from "../components/comment-section";
 import { Layout } from "../components/layout";
 import { MarkdownViewer } from "../components/markdown-viewer";
+import { useQuery } from "@tanstack/react-query";
+import { kyInstance } from "@/lib/kyInstance";
+import { Problem } from "@/models/Problem";
+
+interface RestApiResponse<T> {
+  data: T;
+  success: boolean;
+}
+
+const useProblemDetailQuery = (id: string) => {
+  return useQuery({
+    queryKey: ["problem", id],
+    queryFn: () => kyInstance.get(`problems/${id}`).json() as Promise<RestApiResponse<Problem>>,
+  });
+};
 
 export default function ProblemDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const { data: problemRes, isSuccess } = useProblemDetailQuery(id || "0");
 
   // 실제 구현에서는 id를 사용하여 문제 데이터를 가져옵니다
-  const problem = {
-    id: Number.parseInt(id || "0"),
-    title: "미분방정식의 일반해 구하기",
-    category: "수학",
-    author: "mathprofessor",
-    authorAvatar: "/musical-performance.png",
-    date: "2023-04-28",
-    likes: 24,
-    content: `
-다음 미분방정식의 일반해를 구하시오:
+  //   const problem = {
+  //     id: Number.parseInt(id || "0"),
+  //     title: "미분방정식의 일반해 구하기",
+  //     category: "수학",
+  //     author: "mathprofessor",
+  //     authorAvatar: "/musical-performance.png",
+  //     date: "2023-04-28",
+  //     likes: 24,
+  //     content: `
+  // 다음 미분방정식의 일반해를 구하시오:
 
-$$\\frac{d^2y}{dx^2} + 4\\frac{dy}{dx} + 4y = 0$$
+  // $$\\frac{d^2y}{dx^2} + 4\\frac{dy}{dx} + 4y = 0$$
 
-이 문제는 2차 상미분방정식으로, 특성방정식을 이용하여 해결할 수 있습니다.
+  // 이 문제는 2차 상미분방정식으로, 특성방정식을 이용하여 해결할 수 있습니다.
 
-힌트: 특성방정식은 $r^2 + 4r + 4 = 0$ 입니다.
-    `,
-    tags: ["미분방정식", "수학", "해석학"],
-    solved: true,
-  };
-
+  // 힌트: 특성방정식은 $r^2 + 4r + 4 = 0$ 입니다.
+  //     `,
+  //     tags: ["미분방정식", "수학", "해석학"],
+  //     solved: true,
+  //   };
+  console.log(isSuccess, problemRes);
+  if (!isSuccess) return <div>Loading...</div>;
+  const problem = problemRes.data;
   return (
     <Layout>
       <main className="flex-1 container py-8 px-4 md:px-8 max-w-full mx-auto">
@@ -48,9 +66,9 @@ $$\\frac{d^2y}{dx^2} + 4\\frac{dy}{dx} + 4y = 0$$
             <CardHeader className="bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-800">
               <div className="flex flex-wrap gap-2 mb-2">
                 <Badge variant="outline" className="bg-white dark:bg-gray-800">
-                  {problem.category}
+                  {problem.categories.map((category) => category).join(", ")}
                 </Badge>
-                {problem.tags.map((tag) => (
+                {problem.tags?.map((tag) => (
                   <Badge
                     key={tag}
                     variant="secondary"
@@ -68,12 +86,13 @@ $$\\frac{d^2y}{dx^2} + 4\\frac{dy}{dx} + 4y = 0$$
               <CardTitle className="text-2xl">{problem.title}</CardTitle>
               <div className="flex items-center gap-2 mt-2">
                 <Avatar className="h-8 w-8 border-2 border-white dark:border-gray-800">
-                  <AvatarImage src={problem.authorAvatar || "/placeholder.svg"} alt={problem.author} />
-                  <AvatarFallback>{problem.author.substring(0, 2).toUpperCase()}</AvatarFallback>
+                  <AvatarImage src={"/placeholder.svg"} alt={problem.author.username} />{" "}
+                  {/* TODO: author에 아바타 이미지 넣기 */}
+                  <AvatarFallback>{problem.author.username.substring(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="text-sm">
-                  <span className="font-medium">{problem.author}</span>
-                  <span className="text-gray-500 dark:text-gray-400"> • {problem.date}</span>
+                  <span className="font-medium">{problem.author.username}</span>
+                  <span className="text-gray-500 dark:text-gray-400"> • {problem.createdAt}</span>
                 </div>
               </div>
             </CardHeader>
@@ -88,7 +107,7 @@ $$\\frac{d^2y}{dx^2} + 4\\frac{dy}{dx} + 4y = 0$$
                   className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-teal-500 dark:hover:text-teal-400"
                 >
                   <ThumbsUp className="h-4 w-4" />
-                  <span>{problem.likes}</span>
+                  <span>{problem.likeCount}</span>
                 </Button>
                 <Button
                   variant="ghost"
@@ -96,7 +115,7 @@ $$\\frac{d^2y}{dx^2} + 4\\frac{dy}{dx} + 4y = 0$$
                   className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-teal-500 dark:hover:text-teal-400"
                 >
                   <MessageSquare className="h-4 w-4" />
-                  <span>댓글</span>
+                  <span>댓글 ({problem.commentCount})</span>
                 </Button>
               </div>
               <div className="flex gap-2">

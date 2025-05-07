@@ -9,6 +9,7 @@ interface ProblemContainerProps {
   lastPage: number;
   currentPage: number;
   onTabChange: (value: string) => void;
+  onPageChange: (value: number) => void;
 }
 
 export function ProblemContainer({

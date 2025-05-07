@@ -12,7 +12,7 @@ import { useProblemQuery } from "@/query/useProblemQuery";
 export interface PaginationQueryParams {
   page: number;
   limit?: number;
-  sortBy?: "latest";
+  sortBy?: "latest" | "popular" | "comments";
 }
 const usePagination = (initial?: PaginationQueryParams) => {
   const [page, setPage] = useState(initial?.page ?? 1);
@@ -150,7 +150,7 @@ export default function ProblemsPage() {
               />
             </div>
             <div className="flex gap-2">
-              <Select value={sortBy} onValueChange={setSortBy}>
+              <Select value={sortBy} onValueChange={(value) => setSortBy(value as "latest" | "popular" | "comments")}>
                 <SelectTrigger className="w-[140px] rounded-full">
                   <SelectValue placeholder="정렬 기준" />
                 </SelectTrigger>

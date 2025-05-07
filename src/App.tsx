@@ -20,6 +20,7 @@ import TermsPage from "./components/footer/TermsPage";
 import PrivacyPolicyPage from "./components/footer/PrivacyPolicyPage";
 import CookiePolicyPage from "./components/footer/CookiePolicyPage";
 import FAQDetailPage from "./components/footer/FAQDetailPage";
+import ContactUsPage from "./components/footer/ContactUsPage";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
       <Route path="/terms" element={<TermsPage />} />
       <Route path="/privacy" element={<PrivacyPolicyPage />} />
       <Route path="/cookies" element={<CookiePolicyPage />} />
+      <Route path="/contact" element={<ContactUsPage />} />
     </Routes>
   );
 }

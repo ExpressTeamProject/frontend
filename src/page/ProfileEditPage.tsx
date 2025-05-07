@@ -198,18 +198,6 @@ export default function ProfileEditPage() {
                   </Select>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="website">웹사이트</Label>
-                  <Input
-                    id="website"
-                    name="website"
-                    type="url"
-                    value={formData.website}
-                    onChange={handleChange}
-                    placeholder="https://example.com"
-                  />
-                </div>
-
                 {/* 소셜 링크 */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">소셜 미디어</h3>
@@ -253,12 +241,6 @@ export default function ProfileEditPage() {
                   <div className="flex flex-col gap-2">
                     <Link to="/settings/password" className="text-teal-500 hover:text-teal-600 transition-colors">
                       비밀번호 변경
-                    </Link>
-                    <Link to="/settings/notifications" className="text-teal-500 hover:text-teal-600 transition-colors">
-                      알림 설정
-                    </Link>
-                    <Link to="/settings/privacy" className="text-teal-500 hover:text-teal-600 transition-colors">
-                      개인정보 설정
                     </Link>
                   </div>
                 </div>

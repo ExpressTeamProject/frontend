@@ -2,18 +2,7 @@ import { Link } from "react-router";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { MessageSquare, ThumbsUp } from "lucide-react";
-
-interface Problem {
-  id: number;
-  title: string;
-  categories: string[];
-  author: { username: string };
-  createdAt: string;
-  likeCount: number;
-  commentCount: number;
-  solved: boolean;
-  tags?: string[];
-}
+import { Problem } from "@/query/useProblemQuery";
 
 interface ProblemCardProps {
   problem: Problem;
