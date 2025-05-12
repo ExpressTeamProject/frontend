@@ -4,16 +4,19 @@ import { ProblemCard } from "../../components/problem-card";
 import { useProblemsQuery } from "@/query/useProblemsQuery";
 import { PaginationQueryParams } from "@/query/_common/usePagination";
 import { CircleSpinner } from "@/components/spinner";
+import useFilter from "@/query/_common/useFilter";
+import Pagination from "@/components/pagination";
 
 interface ProblemContainerProps {
   activeTab: string;
+  filter: ReturnType<typeof useFilter>;
   onTabChange: (value: string) => void;
   onPageChange: (value: number) => void;
   pagination: Required<PaginationQueryParams>;
 }
 
-export function ProblemContainer({ activeTab, pagination, onTabChange, onPageChange }: ProblemContainerProps) {
-  const { data: problems, isSuccess } = useProblemsQuery(pagination);
+export function ProblemContainer({ activeTab, pagination, filter, onTabChange, onPageChange }: ProblemContainerProps) {
+  const { data: problems, isSuccess } = useProblemsQuery(pagination, filter);
   const handleTabChange = (value: string) => {
     onTabChange(value);
   };
@@ -83,61 +86,7 @@ export function ProblemContainer({ activeTab, pagination, onTabChange, onPageCha
       </Tabs>
 
       {/* 페이지네이션 */}
-      <div className="flex justify-center mt-8">
-        <nav className="flex items-center gap-1">
-          <Button variant="outline" size="icon" className="rounded-full">
-            <span className="sr-only">이전 페이지</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
-            >
-              <path d="m15 18-6-6 6-6" />
-            </svg>
-          </Button>
-          {Array.from({ length: lastPage }, (_, index) => {
-            const isCurrentPage = currentPage === index + 1;
-            return (
-              <Button
-                key={index}
-                variant="outline"
-                size="sm"
-                className={`rounded-full hover:cursor-pointer ${
-                  isCurrentPage ? "bg-primary text-primary-foreground" : ""
-                }`}
-                onClick={() => onPageChange(index + 1)}
-              >
-                {index + 1}
-              </Button>
-            );
-          })}
-          {/* <span className="mx-1">...</span> */}
-          <Button variant="outline" size="icon" className="rounded-full">
-            <span className="sr-only">다음 페이지</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
-            >
-              <path d="m9 18 6-6-6-6" />
-            </svg>
-          </Button>
-        </nav>
-      </div>
+      <Pagination currentPage={currentPage} lastPage={lastPage} onPageChange={onPageChange} />
     </div>
   );
 }

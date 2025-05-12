@@ -7,18 +7,20 @@ function FilterSidebar({
   showFilters,
   selectedStatus,
   handleStatusChange,
-  handleCategoryChange,
-  handleTagChange,
+  toggleCategory: handleCategoryChange,
+  toggleTag: handleTagChange,
   popularTags,
   selectedTags,
+  categories,
 }: {
   showFilters: boolean;
   selectedStatus: string;
   handleStatusChange: (status: string) => void;
-  handleCategoryChange: (categories: string[]) => void;
-  handleTagChange: (tag: string) => void;
-  popularTags: string[];
-  selectedTags: string[];
+  toggleCategory: (category: string) => void;
+  toggleTag: (tag: string) => void;
+  popularTags: readonly string[];
+  selectedTags: readonly string[];
+  categories: Set<string>;
 }) {
   return (
     <div className={`md:w-1/4 lg:w-1/5 space-y-6 ${showFilters ? "block" : "hidden md:block"}`}>
@@ -57,7 +59,7 @@ function FilterSidebar({
             </div>
             <div>
               <h4 className="font-medium mb-2">카테고리</h4>
-              <CategoryFilter onCategoryChange={handleCategoryChange} />
+              <CategoryFilter categories={categories} toggleCategory={handleCategoryChange} />
             </div>
             <div>
               <h4 className="font-medium mb-2">인기 태그</h4>

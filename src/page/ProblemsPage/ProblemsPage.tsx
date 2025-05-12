@@ -8,29 +8,29 @@ import { BookOpen, Filter, Plus, Search } from "lucide-react";
 import FilterSidebar from "./FilterSidebar";
 import { ProblemContainer } from "@/page/ProblemsPage/ProblemContainer";
 import { usePagination } from "@/query/_common/usePagination";
+import { POPULAR_TAGS, STATUS } from "@/constants/categories";
+import useFilter from "@/query/_common/useFilter";
 
 export default function ProblemsPage() {
-  const [selectedStatus, setSelectedStatus] = useState("all");
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
 
   const pagination = usePagination({ page: 1 });
+  const filter = useFilter();
 
-  console.log(pagination);
   // 카테고리 변경 핸들러
-  const handleCategoryChange = (categories: string[]) => {
-    pagination.setCategories(categories);
+  const handleCategoryChange = (category: string) => {
+    filter.toggleCategory(category);
   };
 
   // 상태 변경 핸들러
   const handleStatusChange = (status: string) => {
-    setSelectedStatus(status);
+    filter.setStatus(status as (typeof STATUS)[number]);
   };
 
   // 태그 변경 핸들러
   const handleTagChange = (tag: string) => {
-    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
+    filter.toggleTag(tag);
   };
 
   // 탭 변경 핸들러
@@ -98,17 +98,19 @@ export default function ProblemsPage() {
             {/* 사이드바 - 모바일에서는 토글 가능 */}
             <FilterSidebar
               showFilters={showFilters}
-              selectedStatus={selectedStatus}
+              selectedStatus={filter.status}
               handleStatusChange={handleStatusChange}
-              handleCategoryChange={handleCategoryChange}
-              handleTagChange={handleTagChange}
-              popularTags={popularTags}
-              selectedTags={selectedTags}
+              toggleCategory={handleCategoryChange}
+              toggleTag={handleTagChange}
+              popularTags={POPULAR_TAGS}
+              selectedTags={Array.from(filter.tags)}
+              categories={filter.categories}
             />
 
             {/* 문제 목록 */}
             <ProblemContainer
               pagination={pagination}
+              filter={filter}
               activeTab={activeTab}
               onTabChange={handleTabChange}
               onPageChange={pagination.setPage}
@@ -119,16 +121,3 @@ export default function ProblemsPage() {
     </Layout>
   );
 }
-
-// 인기 태그
-const popularTags = [
-  "미분방정식",
-  "알고리즘",
-  "양자역학",
-  "유기화학",
-  "데이터구조",
-  "열역학",
-  "선형대수",
-  "통계학",
-  "기타",
-];

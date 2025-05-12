@@ -12,11 +12,10 @@ export interface PaginationQueryParams {
 
 export const usePagination = (initial?: PaginationQueryParams) => {
   const [page, setPage] = useState(initial?.page ?? 1);
-  const [limit, setLimit] = useState(initial?.limit ?? 20);
+  const [limit, setLimit] = useState(initial?.limit ?? 5);
   const [sort, setSort] = useState(initial?.sort ?? "latest");
   const [search, setSearch] = useState(initial?.search ?? undefined);
   const [tags, setTags] = useState(initial?.tags ?? []);
-  const [categories, setCategories] = useState(initial?.categories ?? []);
   const [status, setStatus] = useState(initial?.status ?? undefined);
 
   return {
@@ -25,14 +24,12 @@ export const usePagination = (initial?: PaginationQueryParams) => {
     sort,
     search,
     tags,
-    categories,
     status,
     setPage,
     setLimit,
     setSort,
     setSearch,
     setTags,
-    setCategories,
     setStatus,
   };
 };
