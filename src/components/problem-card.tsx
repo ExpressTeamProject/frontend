@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { MessageSquare, ThumbsUp } from "lucide-react";
-import { Problem } from "@/query/useProblemsQuery";
+import { Problem } from "@/models/Problem";
 
 interface ProblemCardProps {
   problem: Problem;
@@ -19,15 +19,15 @@ export function ProblemCard({ problem }: ProblemCardProps) {
                 <Badge
                   variant="outline"
                   className={`${
-                    problem.solved
+                    problem.isSolved
                       ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
                       : "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
                   }`}
                 >
-                  {problem.solved ? "해결됨" : "미해결"}
+                  {problem.isSolved ? "해결됨" : "미해결"}
                 </Badge>
                 <Badge variant="secondary" className="bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400">
-                  {problem.categories.map((category) => category).join(", ")}
+                  {problem.category}
                 </Badge>
               </div>
               <h3 className="text-lg font-semibold mb-1 line-clamp-2">{problem.title}</h3>

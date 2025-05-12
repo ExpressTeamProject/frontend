@@ -1,4 +1,4 @@
-import { Author } from "./Author";
+import { Author } from "./User";
 import { Problem } from "./Problem";
 
 export interface Comment {
