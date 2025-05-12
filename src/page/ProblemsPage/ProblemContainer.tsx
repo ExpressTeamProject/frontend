@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProblemCard } from "../../components/problem-card";
 import { useProblemsQuery } from "@/query/useProblemsQuery";
 import { PaginationQueryParams } from "@/query/_common/usePagination";
+import { CircleSpinner } from "@/components/spinner";
 
 interface ProblemContainerProps {
   activeTab: string;
@@ -17,7 +18,19 @@ export function ProblemContainer({ activeTab, pagination, onTabChange, onPageCha
     onTabChange(value);
   };
 
-  if (!isSuccess) return <div>Loading...</div>;
+  // if (!isSuccess) return <div>Loading...</div>;
+  if (!isSuccess)
+    return (
+      <div className="flex items-center justify-center w-full h-[400px]">
+        <div className="flex flex-col items-center p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
+          <div className="relative">
+            <div className="absolute -inset-4 rounded-full bg-teal-100 dark:bg-teal-900/30 blur-lg opacity-70"></div>
+            <CircleSpinner size="xl" color="teal" className="relative z-10" />
+          </div>
+          <p className="text-teal-600 dark:text-teal-400 font-medium mt-4">데이터를 불러오는 중입니다...</p>
+        </div>
+      </div>
+    );
 
   const filteredProblems = problems.data;
   const lastPage = problems.pagination.totalPages;

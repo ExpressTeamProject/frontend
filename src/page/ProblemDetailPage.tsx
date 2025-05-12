@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
@@ -8,17 +9,37 @@ import { CommentSection } from "../components/comment-section";
 import { Layout } from "../components/layout";
 import { MarkdownViewer } from "../components/markdown-viewer";
 import { useProblemDetailQuery } from "@/query/useProblemDetailQuery";
+import ShareSuccessModal from "./ShareSuccessPage";
+import { CircleSpinner } from "@/components/spinner";
 
 export default function ProblemDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: problemRes, isSuccess } = useProblemDetailQuery(id || "0");
+  const [showShareSuccess, setShowShareSuccess] = useState(false);
 
   // TODO : 서버데이터 사용하게 수정
-  if (!isSuccess) return <div>Loading...</div>;
+  if (!isSuccess)
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+        <div className="flex flex-col items-center p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
+          <div className="relative">
+            <div className="absolute -inset-4 rounded-full bg-teal-100 dark:bg-teal-900/30 blur-lg opacity-70"></div>
+            <CircleSpinner size="xl" color="teal" className="relative z-10" />
+          </div>
+          <p className="text-teal-600 dark:text-teal-400 font-medium mt-4">데이터를 불러오는 중입니다...</p>
+        </div>
+      </div>
+    );
   const problem = problemRes.data;
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setShowShareSuccess(true);
+  };
 
   return (
     <Layout>
+      {showShareSuccess && <ShareSuccessModal onComplete={() => setShowShareSuccess(false)} />}
       <main className="flex-1 container py-8 px-4 md:px-8 max-w-full mx-auto">
         <div className="flex flex-col gap-8 max-w-6xl mx-auto">
           <div className="flex items-center">
@@ -97,6 +118,7 @@ export default function ProblemDetailPage() {
                   variant="ghost"
                   size="sm"
                   className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-teal-500 dark:hover:text-teal-400"
+                  onClick={handleShare}
                 >
                   <Share2 className="h-4 w-4" />
                   <span>공유</span>

@@ -17,7 +17,15 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    login({ email, password }, { onSuccess: () => navigate("/") });
+    login(
+      { email, password },
+      {
+        onSuccess: () => navigate("/"),
+        onError: (error) => {
+          console.error("로그인 실패", error);
+        },
+      }
+    );
   };
 
   return (

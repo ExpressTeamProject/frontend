@@ -1,12 +1,10 @@
-"use client";
-
-import type React from "react";
 import { useState } from "react";
 import { Layout } from "../layout";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
+import SuccessPopup from "./SuccessPopup";
 
 interface ContactForm {
   title: string;
@@ -26,6 +24,7 @@ const ContactUsPage: React.FC = () => {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -58,6 +57,7 @@ const ContactUsPage: React.FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       setMessage("문의가 성공적으로 접수되었습니다.");
+      setShowSuccessPopup(true);
       setFormData({
         title: "",
         userId: "",
@@ -75,6 +75,7 @@ const ContactUsPage: React.FC = () => {
 
   return (
     <Layout>
+      {showSuccessPopup && <SuccessPopup onClose={() => setShowSuccessPopup(false)} />}
       <div className="max-w-screen-lg mx-auto px-4 py-12">
         <div className="flex justify-center mb-8">
           <div className="text-center">

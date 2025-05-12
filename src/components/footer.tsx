@@ -130,7 +130,10 @@ function Footer() {
           <p className="text-sm text-gray-500 dark:text-gray-400">© 2025 전공문제 공유 플랫폼. 모든 권리 보유.</p>
           <div className="flex space-x-4 mt-4 md:mt-0">
             <motion.div whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.8 }}>
-              <Link to="#" className="text-gray-500 hover:text-teal-500 dark:text-gray-400 dark:hover:text-teal-400">
+              <Link
+                to="https://x.com/"
+                className="text-gray-500 hover:text-teal-500 dark:text-gray-400 dark:hover:text-teal-400"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -144,7 +147,10 @@ function Footer() {
               </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.8 }}>
-              <Link to="#" className="text-gray-500 hover:text-teal-500 dark:text-gray-400 dark:hover:text-teal-400">
+              <Link
+                to="https://www.instagram.com/"
+                className="text-gray-500 hover:text-teal-500 dark:text-gray-400 dark:hover:text-teal-400"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -158,7 +164,10 @@ function Footer() {
               </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.8 }}>
-              <Link to="#" className="text-gray-500 hover:text-teal-500 dark:text-gray-400 dark:hover:text-teal-400">
+              <Link
+                to="http://facebook.com/"
+                className="text-gray-500 hover:text-teal-500 dark:text-gray-400 dark:hover:text-teal-400"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"

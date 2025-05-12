@@ -1,5 +1,3 @@
-import type React from "react";
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Button } from "../components/ui/button";
@@ -132,7 +130,6 @@ export default function RegisterPage() {
                 onClick={() => {}}
               >
                 {isPending ? "회원가입 중..." : "회원가입"}
-                회원가입
               </Button>
               <div className="text-center text-sm">
                 이미 계정이 있으신가요?{" "}

@@ -21,6 +21,8 @@ import PrivacyPolicyPage from "./components/footer/PrivacyPolicyPage";
 import CookiePolicyPage from "./components/footer/CookiePolicyPage";
 import FAQDetailPage from "./components/footer/FAQDetailPage";
 import ContactUsPage from "./components/footer/ContactUsPage";
+import ForgotPasswordPage from "./page/ForgotPasswordPage";
+import ResetPasswordPage from "./page/ResetPasswordPage";
 
 function App() {
   return (
@@ -47,6 +49,8 @@ function App() {
       <Route path="/privacy" element={<PrivacyPolicyPage />} />
       <Route path="/cookies" element={<CookiePolicyPage />} />
       <Route path="/contact" element={<ContactUsPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/settings/password" element={<ResetPasswordPage />} />
     </Routes>
   );
 }

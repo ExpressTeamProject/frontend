@@ -1,7 +1,5 @@
-import { useState } from "react";
 import { Layout } from "../components/layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -12,12 +10,24 @@ import { PaginationQueryParams, usePagination } from "@/query/_common/usePaginat
 import { useProblemsQuery } from "@/query/useProblemsQuery";
 import { Problem } from "@/models/Problem";
 import { categories } from "@/constants/categories";
+import { CircleSpinner } from "@/components/spinner";
 
 export default function SolvedProblemsPage() {
   const pagination = usePagination({ page: 1, status: "solved" });
   const { data: solvedProblemsRes, isSuccess } = useProblemsQuery(pagination);
 
-  if (!isSuccess) return <div>Loading...</div>;
+  if (!isSuccess)
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+        <div className="flex flex-col items-center p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
+          <div className="relative">
+            <div className="absolute -inset-4 rounded-full bg-teal-100 dark:bg-teal-900/30 blur-lg opacity-70"></div>
+            <CircleSpinner size="xl" color="teal" className="relative z-10" />
+          </div>
+          <p className="text-teal-600 dark:text-teal-400 font-medium mt-4">데이터를 불러오는 중입니다...</p>
+        </div>
+      </div>
+    );
   const solvedProblems = solvedProblemsRes.data;
 
   return (

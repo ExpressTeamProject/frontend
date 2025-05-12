@@ -1,4 +1,3 @@
-import type React from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Layout } from "../components/layout";
@@ -196,6 +195,18 @@ export default function ProfileEditPage() {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="website">웹사이트</Label>
+                  <Input
+                    id="website"
+                    name="website"
+                    type="url"
+                    value={formData.website}
+                    onChange={handleChange}
+                    placeholder="https://example.com"
+                  />
                 </div>
 
                 {/* 소셜 링크 */}
