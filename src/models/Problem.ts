@@ -1,4 +1,5 @@
 
+import { Comment } from './Comment';
 import { User } from './User';
 
 export type Category =
@@ -25,6 +26,7 @@ export interface Attachment {
 }
 
 export interface Problem {
+  id: string;
   title: string;
   content: string;
   author: User;

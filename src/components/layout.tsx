@@ -15,6 +15,7 @@ interface LayoutProps {
 }
 
 export function Layout({ children, hideFooter = false }: LayoutProps) {
+  const { user } = useLoginStore();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [showFab, setShowFab] = useState(false);
@@ -62,7 +63,7 @@ export function Layout({ children, hideFooter = false }: LayoutProps) {
                     3
                   </span>
                 </Button>
-                <Link to="/user/:username">
+                <Link to={`/user/${user?.username}`}>
                   <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
                     <span className="text-sm font-medium text-gray-600">U</span>
                   </div>

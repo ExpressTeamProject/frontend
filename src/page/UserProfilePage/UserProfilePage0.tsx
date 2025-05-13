@@ -1,10 +1,10 @@
-import { Layout } from "../components/layout";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { Badge } from "../components/ui/badge";
-import { Button } from "../components/ui/button";
-import { ProblemCard } from "../components/problem-card";
+import { Layout } from "../../components/layout";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
+import { Badge } from "../../components/ui/badge";
+import { Button } from "../../components/ui/button";
+import { ProblemCard } from "../../components/problem-card";
 import { Link, useParams } from "react-router";
 import {
   BookOpen,
@@ -18,10 +18,20 @@ import {
   GraduationCap,
   ThumbsUp,
 } from "lucide-react";
+import useLoginStore from "@/store/useLoginStore";
+import { Problem } from "@/models/Problem";
+import { User } from "@/models/User";
 
 export default function UserProfilePage() {
   const { username } = useParams<{ username: string }>();
+  const { user: userData } = useLoginStore();
 
+  const stats = statsMock;
+
+  // GET /users/:username
+  // const user = userData ?? userMock;
+  const user = userData!;
+  const isMe = user.username === username;
   return (
     <Layout>
       <div className="container py-8 px-4 md:px-8 max-w-full mx-auto">
@@ -32,10 +42,10 @@ export default function UserProfilePage() {
               <div className="flex flex-col md:flex-row gap-6 items-start">
                 <div className="flex flex-col items-center">
                   <Avatar className="h-32 w-32 border-4 border-white dark:border-gray-800 shadow-md">
-                    <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.username} />
-                    <AvatarFallback className="text-4xl">{user.displayName.substring(0, 2)}</AvatarFallback>
+                    <AvatarImage src={user.profileImage || "/placeholder.svg"} alt={user.username} />
+                    <AvatarFallback className="text-4xl">{user.nickname.substring(0, 2)}</AvatarFallback>
                   </Avatar>
-                  <div className="flex gap-2 mt-4">
+                  {/* <div className="flex gap-2 mt-4">
                     <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 flex items-center gap-1">
                       <Award className="h-3 w-3" /> {user.badges.gold}
                     </Badge>
@@ -45,15 +55,15 @@ export default function UserProfilePage() {
                     <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300 flex items-center gap-1">
                       <Award className="h-3 w-3" /> {user.badges.bronze}
                     </Badge>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="flex-1">
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
                     <div>
-                      <h1 className="text-2xl font-bold">{user.displayName}</h1>
+                      <h1 className="text-2xl font-bold">{user.nickname}</h1>
                       <p className="text-muted-foreground">@{user.username}</p>
                     </div>
-                    {user.isCurrentUser ? (
+                    {isMe ? (
                       <Link to={`/user/${user.username}/edit`}>
                         <Button className="mt-2 md:mt-0 bg-teal-500 hover:bg-teal-600 transition-colors">
                           <Edit className="mr-2 h-4 w-4" /> 프로필 편집
@@ -73,7 +83,7 @@ export default function UserProfilePage() {
                     </div>
                     <div className="flex items-center gap-1 text-muted-foreground">
                       <Calendar className="h-4 w-4" />
-                      <span>가입일: {user.joinDate}</span>
+                      <span>가입일: {user.createdAt.toLocaleDateString()}</span>
                     </div>
                     <div className="flex items-center gap-1 text-muted-foreground">
                       <Mail className="h-4 w-4" />
@@ -91,7 +101,7 @@ export default function UserProfilePage() {
               <CardContent className="p-6 flex items-center justify-between">
                 <div>
                   <p className="text-muted-foreground text-sm">등록한 문제</p>
-                  <p className="text-3xl font-bold">{user.stats.problems}</p>
+                  <p className="text-3xl font-bold">{stats.problems}</p>
                 </div>
                 <BookOpen className="h-8 w-8 text-teal-500" />
               </CardContent>
@@ -100,7 +110,7 @@ export default function UserProfilePage() {
               <CardContent className="p-6 flex items-center justify-between">
                 <div>
                   <p className="text-muted-foreground text-sm">해결한 문제</p>
-                  <p className="text-3xl font-bold">{user.stats.solutions}</p>
+                  <p className="text-3xl font-bold">{stats.solutions}</p>
                 </div>
                 <CheckCircle className="h-8 w-8 text-teal-500" />
               </CardContent>
@@ -109,7 +119,7 @@ export default function UserProfilePage() {
               <CardContent className="p-6 flex items-center justify-between">
                 <div>
                   <p className="text-muted-foreground text-sm">커뮤니티 게시글</p>
-                  <p className="text-3xl font-bold">{user.stats.posts}</p>
+                  <p className="text-3xl font-bold">{stats.posts}</p>
                 </div>
                 <MessageSquare className="h-8 w-8 text-teal-500" />
               </CardContent>
@@ -118,7 +128,7 @@ export default function UserProfilePage() {
               <CardContent className="p-6 flex items-center justify-between">
                 <div>
                   <p className="text-muted-foreground text-sm">평판</p>
-                  <p className="text-3xl font-bold">{user.stats.reputation}</p>
+                  <p className="text-3xl font-bold">{stats.reputation}</p>
                 </div>
                 <Award className="h-8 w-8 text-teal-500" />
               </CardContent>
@@ -143,7 +153,9 @@ export default function UserProfilePage() {
                 <CardContent>
                   <div className="grid gap-4">
                     {userProblems.length > 0 ? (
-                      userProblems.map((problem) => <ProblemCard key={problem.id} problem={problem} />)
+                      userProblems.map((problem) => (
+                        <ProblemCard key={problem.title + problem.content} problem={problem} />
+                      ))
                     ) : (
                       <p className="text-center py-8 text-muted-foreground">등록한 문제가 없습니다</p>
                     )}
@@ -160,7 +172,9 @@ export default function UserProfilePage() {
                 <CardContent>
                   <div className="grid gap-4">
                     {solvedProblems.length > 0 ? (
-                      solvedProblems.map((problem) => <ProblemCard key={problem.id} problem={problem} />)
+                      solvedProblems.map((problem) => (
+                        <ProblemCard key={problem.title + problem.content} problem={problem} />
+                      ))
                     ) : (
                       <p className="text-center py-8 text-muted-foreground">해결한 문제가 없습니다</p>
                     )}
@@ -179,7 +193,7 @@ export default function UserProfilePage() {
                     {userPosts.length > 0 ? (
                       userPosts.map((post) => (
                         <Card
-                          key={post.id}
+                          key={post.title + post.content}
                           className="overflow-hidden border-none shadow-sm hover:shadow-md dark:shadow-gray-800/30 transition-all duration-300"
                         >
                           <CardContent className="p-4">
@@ -272,96 +286,100 @@ export default function UserProfilePage() {
 }
 
 // 실제 구현에서는 username을 사용하여 사용자 데이터를 가져옵니다
-const user = {
-  id: 1,
+const userMock: User = {
   username: "mathprofessor",
-  displayName: "수학 교수",
-  avatar: "/musical-performance.png",
+  password: "password",
+  role: "user",
+  updatedAt: new Date("2023-01-15"),
+  nickname: "수학 교수",
+  profileImage: "/musical-performance.png",
   bio: "수학과 교수로 미분방정식과 선형대수학을 가르치고 있습니다. 학생들의 질문에 답변하고 도움을 주는 것을 좋아합니다.",
   major: "수학",
-  joinDate: "2023-01-15",
+  createdAt: new Date("2023-01-15"),
   email: "math.professor@example.com",
-  stats: {
-    problems: 24,
-    solutions: 87,
-    posts: 35,
-    reputation: 1850,
-  },
-  badges: {
-    gold: 5,
-    silver: 12,
-    bronze: 24,
-  },
-  isCurrentUser: true,
+};
+
+const statsMock = {
+  problems: 24,
+  solutions: 87,
+  posts: 35,
+  reputation: 1850,
 };
 
 // 사용자가 작성한 문제 샘플 데이터
-const userProblems = [
+const userProblems: Problem[] = [
   {
-    id: 1,
     title: "미분방정식의 일반해 구하기",
-    category: "수학",
-    author: user.username,
-    date: "2023-04-28",
-    likes: 24,
-    comments: 8,
-    solved: true,
+    categories: ["수학"],
+    author: userMock,
+    createdAt: new Date("2023-04-28"),
+    likes: [userMock],
+    comments: [],
+    isSolved: true,
+    content: "미분방정식의 일반해를 구하는 문제입니다.",
+    tags: ["미분방정식"],
+    attachments: [],
+    viewCount: 0,
+    aiResponse: null,
+    aiResponseCreatedAt: null,
+    updatedAt: new Date("2023-04-28"),
   },
   {
-    id: 3,
-    title: "선형대수학 고유값 문제",
-    category: "수학",
-    author: user.username,
-    date: "2023-04-22",
-    likes: 17,
-    comments: 9,
-    solved: true,
+    title: "뉴턴의 운동법칙 적용 문제",
+    categories: ["물리학"],
+    author: userMock,
+    createdAt: new Date("2023-04-22"),
+    updatedAt: new Date("2023-04-22"),
+    likes: [userMock],
+    comments: [],
+    isSolved: true,
+    content: "뉴턴의 운동법칙을 적용하는 문제입니다.",
+    tags: ["뉴턴의 운동법칙"],
+    attachments: [],
+    viewCount: 0,
+    aiResponse: null,
+    aiResponseCreatedAt: null,
+  },
+  {
+    title: "유기화학 반응 메커니즘 설명",
+    categories: ["화학"],
+    author: userMock,
+    createdAt: new Date("2023-04-25"),
+    updatedAt: new Date("2023-04-25"),
+    likes: [userMock],
+    comments: [],
+    isSolved: true,
+    content: "유기화학 반응 메커니즘을 설명하는 문제입니다.",
+    tags: ["유기화학"],
+    attachments: [],
+    viewCount: 0,
+    aiResponse: null,
+    aiResponseCreatedAt: null,
   },
 ];
 
 // 사용자가 해결한 문제 샘플 데이터
-const solvedProblems = [
+const solvedProblems: Problem[] = [
   {
-    id: 2,
-    title: "뉴턴의 운동법칙 적용 문제",
-    category: "물리학",
-    author: "physicslover",
-    date: "2023-04-27",
-    likes: 18,
-    comments: 5,
-    solved: true,
-  },
-  {
-    id: 4,
-    title: "유기화학 반응 메커니즘 설명",
-    category: "화학",
-    author: "chemistrywhiz",
-    date: "2023-04-25",
-    likes: 15,
-    comments: 3,
-    solved: true,
+    title: "선형대수학 고유값 문제",
+    categories: ["수학"],
+    author: userMock,
+    createdAt: new Date("2023-04-28"),
+    updatedAt: new Date("2023-04-28"),
+    likes: [userMock],
+    comments: [],
+    isSolved: true,
+    content: "선형대수학 고유값 문제입니다.",
+    tags: ["선형대수학"],
+    attachments: [],
+    viewCount: 0,
+    aiResponse: null,
+    aiResponseCreatedAt: null,
   },
 ];
 
 // 사용자가 작성한 커뮤니티 게시글 샘플 데이터
-const userPosts = [
-  {
-    id: 1,
-    title: "미분방정식 공부 방법 추천",
-    category: "정보",
-    date: "2023-05-02",
-    likes: 32,
-    comments: 14,
-  },
-  {
-    id: 2,
-    title: "수학과 대학원 진학 조언",
-    category: "정보",
-    date: "2023-04-15",
-    likes: 28,
-    comments: 21,
-  },
-];
+const userPosts = [];
 
 // 활동 로그 샘플 데이터
 const activityLog = [

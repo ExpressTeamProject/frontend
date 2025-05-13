@@ -5,7 +5,7 @@ import { Badge } from "../components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
 import { ThumbsUp, MessageSquare, Share2, Bookmark, ArrowLeft } from "lucide-react";
-import { CommentSection } from "../components/comment-section";
+import { CommentSection } from "../components/comment/comment-section";
 import { Layout } from "../components/layout";
 import { MarkdownViewer } from "../components/markdown-viewer";
 import { useProblemDetailQuery } from "@/query/useProblemDetailQuery";
@@ -79,7 +79,9 @@ export default function ProblemDetailPage() {
                 </Avatar>
                 <div className="text-sm">
                   <span className="font-medium">{problem.author.username}</span>
-                  <span className="text-gray-500 dark:text-gray-400"> • {problem.createdAt}</span>
+                  <span className="text-gray-500 dark:text-gray-400">
+                    • {problem.createdAt?.toLocaleDateString?.()}
+                  </span>
                 </div>
               </div>
             </CardHeader>
@@ -94,7 +96,7 @@ export default function ProblemDetailPage() {
                   className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-teal-500 dark:hover:text-teal-400"
                 >
                   <ThumbsUp className="h-4 w-4" />
-                  <span>{problem.likeCount}</span>
+                  <span>{problem.likes.length}</span>
                 </Button>
                 <Button
                   variant="ghost"
@@ -102,7 +104,7 @@ export default function ProblemDetailPage() {
                   className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-teal-500 dark:hover:text-teal-400"
                 >
                   <MessageSquare className="h-4 w-4" />
-                  <span>댓글 ({problem.commentCount})</span>
+                  <span>댓글 ({problem.comments.length})</span>
                 </Button>
               </div>
               <div className="flex gap-2">

@@ -3,6 +3,7 @@ import { User } from './User';
 
 
 export interface Comment {
+  id: string;
   content: string;
   author: User;
   post: Problem;
@@ -12,5 +13,7 @@ export interface Comment {
   isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;
+  replies: Comment[];
+  likeCount: number;
 }
 
