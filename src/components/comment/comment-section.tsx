@@ -12,7 +12,6 @@ import useCommentByProblemIdQuery from "./useCommentByProblemIdQuery";
 import useNewCommentMutation, { NewCommentParams } from "./useNewCommentMutation";
 import useNewReplyMutation, { NewReplyParams } from "./useNewReplyMutation";
 import useToggleLikeCommentMutation from "./useToggleLikeCommentMutation";
-import useToggleLikeProblemMutation from "./useToggleLikeProblemMutation";
 
 interface CommentSectionProps {
   problemId: Problem["id"];

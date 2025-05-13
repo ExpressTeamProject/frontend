@@ -31,32 +31,7 @@ function FilterSidebar({
             상세 필터
           </h3>
           <div className="space-y-4">
-            <div>
-              <h4 className="font-medium mb-2">상태</h4>
-              <div className="flex flex-wrap gap-2">
-                <Badge
-                  variant={selectedStatus === "all" ? "default" : "outline"}
-                  className="cursor-pointer hover:bg-primary hover:text-primary-foreground"
-                  onClick={() => handleStatusChange("all")}
-                >
-                  전체
-                </Badge>
-                <Badge
-                  variant={selectedStatus === "solved" ? "default" : "outline"}
-                  className="cursor-pointer hover:bg-primary hover:text-primary-foreground"
-                  onClick={() => handleStatusChange("solved")}
-                >
-                  해결됨
-                </Badge>
-                <Badge
-                  variant={selectedStatus === "unsolved" ? "default" : "outline"}
-                  className="cursor-pointer hover:bg-primary hover:text-primary-foreground"
-                  onClick={() => handleStatusChange("unsolved")}
-                >
-                  미해결
-                </Badge>
-              </div>
-            </div>
+            
             <div>
               <h4 className="font-medium mb-2">카테고리</h4>
               <CategoryFilter categories={categories} toggleCategory={handleCategoryChange} />

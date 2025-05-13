@@ -36,6 +36,7 @@ export default function ProblemsPage() {
   // 탭 변경 핸들러
   const handleTabChange = (value: string) => {
     setActiveTab(value);
+    filter.setStatus(value as (typeof STATUS)[number]);
   };
 
   return (
