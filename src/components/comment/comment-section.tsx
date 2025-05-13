@@ -11,6 +11,8 @@ import { Problem } from "@/models/Problem";
 import useCommentByProblemIdQuery from "./useCommentByProblemIdQuery";
 import useNewCommentMutation, { NewCommentParams } from "./useNewCommentMutation";
 import useNewReplyMutation, { NewReplyParams } from "./useNewReplyMutation";
+import useToggleLikeCommentMutation from "./useToggleLikeCommentMutation";
+import useToggleLikeProblemMutation from "./useToggleLikeProblemMutation";
 
 interface CommentSectionProps {
   problemId: Problem["id"];
@@ -21,6 +23,7 @@ export function CommentSection({ problemId }: CommentSectionProps) {
   const { data: comments, isSuccess } = useCommentByProblemIdQuery(problemId);
   const { mutate: createNewComment } = useNewCommentMutation();
   const { mutate: createNewReply } = useNewReplyMutation();
+  const { mutate: toggleLikeComment } = useToggleLikeCommentMutation();
 
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState<Comment["id"] | null>(null);
@@ -45,7 +48,7 @@ export function CommentSection({ problemId }: CommentSectionProps) {
     if (!replyContent.trim()) return;
     if (replyingTo == null) return;
 
-    // 새 답글 추가 (실제 구현에서는 API 호출)
+    // 새 답글 추가
     const newReply: NewReplyParams = {
       parentId: replyingTo,
       content: replyContent,
@@ -56,40 +59,6 @@ export function CommentSection({ problemId }: CommentSectionProps) {
     setReplyingTo(null);
   };
 
-  const handleLike = (commentId: Comment["id"], isReply = false, parentId?: string) => {
-    // if (!isReply) {
-    //   // 댓글 좋아요
-    //   const updatedComments = comments.map((comment) => {
-    //     if (comment.id === commentId) {
-    //       return {
-    //         ...comment,
-    //         likes: comment.likes + 1,
-    //       };
-    //     }
-    //     return comment;
-    //   });
-    //   setComments(updatedComments);
-    // } else if (parentId) {
-    //   // 답글 좋아요
-    //   const updatedComments = comments.map((comment) => {
-    //     if (comment.id === parentId) {
-    //       return {
-    //         ...comment,
-    //         replies: comment.replies?.map((reply) => {
-    //           if (reply.id === commentId) {
-    //             return {
-    //               ...reply,
-    //               likes: reply.likes + 1,
-    //             };
-    //           }
-    //           return reply;
-    //         }),
-    //       };
-    //     }
-    //     return comment;
-    //   });
-    // }
-  };
 
   return (
     <div className="space-y-6">
@@ -121,7 +90,7 @@ export function CommentSection({ problemId }: CommentSectionProps) {
                     variant="ghost"
                     size="sm"
                     className="flex items-center gap-1"
-                    onClick={() => handleLike(comment.id)}
+                    onClick={() => toggleLikeComment(comment.id)}
                   >
                     <ThumbsUp className="h-4 w-4" />
                     <span>{comment.likes.length}</span>
@@ -168,7 +137,7 @@ export function CommentSection({ problemId }: CommentSectionProps) {
                         variant="ghost"
                         size="sm"
                         className="flex items-center gap-1"
-                        onClick={() => handleLike(reply.id, true, comment.id)}
+                        onClick={() => toggleLikeComment(reply.id)}
                       >
                         <ThumbsUp className="h-4 w-4" />
                         <span>{reply.likes.length}</span>

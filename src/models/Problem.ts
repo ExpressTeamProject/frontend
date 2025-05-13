@@ -41,4 +41,6 @@ export interface Problem {
   aiResponseCreatedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
+  likeCount: number;
+  commentCount: number;
 }

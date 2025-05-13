@@ -11,11 +11,14 @@ import { MarkdownViewer } from "../components/markdown-viewer";
 import { useProblemDetailQuery } from "@/query/useProblemDetailQuery";
 import ShareSuccessModal from "./ShareSuccessPage";
 import { CircleSpinner } from "@/components/spinner";
+import useToggleLikeProblemMutation from "@/components/comment/useToggleLikeProblemMutation";
 
 export default function ProblemDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: problemRes, isSuccess } = useProblemDetailQuery(id || "0");
   const [showShareSuccess, setShowShareSuccess] = useState(false);
+
+  const { mutate: toggleLikeProblem } = useToggleLikeProblemMutation(id || "0");
 
   // TODO : 서버데이터 사용하게 수정
   if (!isSuccess)
@@ -94,9 +97,10 @@ export default function ProblemDetailPage() {
                   variant="ghost"
                   size="sm"
                   className="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-teal-500 dark:hover:text-teal-400"
-                >
+                  onClick={() => toggleLikeProblem()}
+                  >
                   <ThumbsUp className="h-4 w-4" />
-                  <span>{problem.likes.length}</span>
+                  <span>{problem.likeCount}</span>
                 </Button>
                 <Button
                   variant="ghost"
