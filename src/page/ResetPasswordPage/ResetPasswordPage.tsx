@@ -1,24 +1,23 @@
-import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { ArrowLeft, BookOpen, Lock, Eye, EyeOff } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { ArrowLeft, BookOpen, Lock, Eye, EyeOff } from 'lucide-react';
+import useResetPasswordMutation from './useResetPasswordMutation';
 
 const ResetPasswordPage: React.FC = () => {
-  const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    password: "",
-    confirmPassword: "",
-  });
+
+  const { mutate: resetPassword, formData, setFormData, isPending } = useResetPasswordMutation();
+
   const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmitting = isPending;
   const [isTokenValid, setIsTokenValid] = useState(true);
-  const [message, setMessage] = useState<{ type: "success" | "error" | ""; text: string }>({
-    type: "",
-    text: "",
+  const [message, setMessage] = useState<{ type: 'success' | 'error' | ''; text: string }>({
+    type: '',
+    text: '',
   });
 
   useEffect(() => {
@@ -40,31 +39,31 @@ const ResetPasswordPage: React.FC = () => {
     };
 
     validateToken();
-  }, [token]);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const toggleShowPassword = () => {
-    setShowPassword((prev) => !prev);
+    setShowPassword(prev => !prev);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // 비밀번호 일치 확인
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.newPassword !== formData.confirmPassword) {
       setMessage({
-        type: "error",
-        text: "비밀번호가 일치하지 않습니다.",
+        type: 'error',
+        text: '비밀번호가 일치하지 않습니다.',
       });
       return;
     }
 
-    setIsSubmitting(true);
-    setMessage({ type: "", text: "" });
+    resetPassword(formData);
+    setMessage({ type: '', text: '' });
 
     try {
       // 실제 API 호출은 여기에 구현
@@ -78,17 +77,17 @@ const ResetPasswordPage: React.FC = () => {
       // });
 
       // 데모 목적으로 타임아웃 사용
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       // 성공 메시지 설정
       setMessage({
-        type: "success",
-        text: "비밀번호가 성공적으로 재설정되었습니다.",
+        type: 'success',
+        text: '비밀번호가 성공적으로 재설정되었습니다.',
       });
 
       // 3초 후 로그인 페이지로 리다이렉트
       setTimeout(() => {
-        navigate("/login");
+        navigate('/login');
       }, 3000);
 
       // 실제 구현에서는 응답 처리
@@ -105,11 +104,9 @@ const ResetPasswordPage: React.FC = () => {
     } catch (error) {
       console.error(error);
       setMessage({
-        type: "error",
-        text: "요청 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        type: 'error',
+        text: '요청 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -160,10 +157,10 @@ const ResetPasswordPage: React.FC = () => {
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                   <Input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    value={formData.password}
+                    id="newPassword"
+                    name="newPassword"
+                    type={showPassword ? 'text' : 'password'}
+                    value={formData.newPassword}
                     onChange={handleChange}
                     className="pl-10 pr-10 rounded-lg border-gray-300 dark:border-gray-700 focus-visible:ring-teal-500"
                     required
@@ -187,7 +184,7 @@ const ResetPasswordPage: React.FC = () => {
                   <Input
                     id="confirmPassword"
                     name="confirmPassword"
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword ? 'text' : 'password'}
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     className="pl-10 rounded-lg border-gray-300 dark:border-gray-700 focus-visible:ring-teal-500"
@@ -199,11 +196,11 @@ const ResetPasswordPage: React.FC = () => {
               {message.text && (
                 <div
                   className={`p-3 rounded-md text-sm ${
-                    message.type === "success"
-                      ? "bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300"
-                      : message.type === "error"
-                      ? "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300"
-                      : ""
+                    message.type === 'success'
+                      ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300'
+                      : message.type === 'error'
+                        ? 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300'
+                        : ''
                   }`}
                 >
                   {message.text}
@@ -216,7 +213,7 @@ const ResetPasswordPage: React.FC = () => {
                 className="w-full rounded-lg bg-teal-500 hover:bg-teal-600 transition-colors"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "처리 중..." : "비밀번호 변경하기"}
+                {isSubmitting ? '처리 중...' : '비밀번호 변경하기'}
               </Button>
             </CardFooter>
           </form>

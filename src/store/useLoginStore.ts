@@ -8,11 +8,11 @@ interface LoginStore {
   setUser: (user: User) => void;
 }
 
-const useLoginStore = create<LoginStore>((set) => ({
+const useUserStore = create<LoginStore>((set) => ({
   token: "",
   setToken: (token: string) => set({ token }),
   user: undefined,
   setUser: (user: User) => { set({ user }); console.log(user) },
 }));
 
-export default useLoginStore;
+export default useUserStore;

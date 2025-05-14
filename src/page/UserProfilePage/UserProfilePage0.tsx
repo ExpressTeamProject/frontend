@@ -1,11 +1,11 @@
-import { Layout } from "../../components/layout";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
-import { Badge } from "../../components/ui/badge";
-import { Button } from "../../components/ui/button";
-import { ProblemCard } from "../../components/problem-card";
-import { Link, useParams } from "react-router";
+import { Layout } from '../../components/layout';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
+import { Badge } from '../../components/ui/badge';
+import { Button } from '../../components/ui/button';
+import { ProblemCard } from '../../components/problem-card';
+import { Link, useParams } from 'react-router';
 import {
   BookOpen,
   CheckCircle,
@@ -17,14 +17,14 @@ import {
   Bookmark,
   GraduationCap,
   ThumbsUp,
-} from "lucide-react";
-import useLoginStore from "@/store/useLoginStore";
-import { Problem } from "@/models/Problem";
-import { User } from "@/models/User";
+} from 'lucide-react';
+import useUserStore from '@/store/useLoginStore';
+import { Problem } from '@/models/Problem';
+import { User } from '@/models/User';
 
 export default function UserProfilePage() {
   const { username } = useParams<{ username: string }>();
-  const { user: userData } = useLoginStore();
+  const { user: userData } = useUserStore();
 
   const stats = statsMock;
 
@@ -42,7 +42,7 @@ export default function UserProfilePage() {
               <div className="flex flex-col md:flex-row gap-6 items-start">
                 <div className="flex flex-col items-center">
                   <Avatar className="h-32 w-32 border-4 border-white dark:border-gray-800 shadow-md">
-                    <AvatarImage src={user.profileImage || "/placeholder.svg"} alt={user.username} />
+                    <AvatarImage src={user.profileImage || '/placeholder.svg'} alt={user.username} />
                     <AvatarFallback className="text-4xl">{user.nickname.substring(0, 2)}</AvatarFallback>
                   </Avatar>
                   {/* <div className="flex gap-2 mt-4">
@@ -153,7 +153,7 @@ export default function UserProfilePage() {
                 <CardContent>
                   <div className="grid gap-4">
                     {userProblems.length > 0 ? (
-                      userProblems.map((problem) => (
+                      userProblems.map(problem => (
                         <ProblemCard key={problem.title + problem.content} problem={problem} />
                       ))
                     ) : (
@@ -172,7 +172,7 @@ export default function UserProfilePage() {
                 <CardContent>
                   <div className="grid gap-4">
                     {solvedProblems.length > 0 ? (
-                      solvedProblems.map((problem) => (
+                      solvedProblems.map(problem => (
                         <ProblemCard key={problem.title + problem.content} problem={problem} />
                       ))
                     ) : (
@@ -191,7 +191,7 @@ export default function UserProfilePage() {
                 <CardContent>
                   <div className="grid gap-4">
                     {userPosts.length > 0 ? (
-                      userPosts.map((post) => (
+                      userPosts.map(post => (
                         <Card
                           key={post.title + post.content}
                           className="overflow-hidden border-none shadow-sm hover:shadow-md dark:shadow-gray-800/30 transition-all duration-300"
@@ -251,22 +251,22 @@ export default function UserProfilePage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {activityLog.map((activity) => (
+                    {activityLog.map(activity => (
                       <div key={activity.id} className="flex items-start gap-4 pb-4 border-b last:border-0">
                         <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded-full">
-                          {activity.type === "problem" && <BookOpen className="h-5 w-5 text-blue-500" />}
-                          {activity.type === "solution" && <CheckCircle className="h-5 w-5 text-green-500" />}
-                          {activity.type === "post" && <MessageSquare className="h-5 w-5 text-purple-500" />}
-                          {activity.type === "comment" && <MessageSquare className="h-5 w-5 text-amber-500" />}
-                          {activity.type === "badge" && <Award className="h-5 w-5 text-yellow-500" />}
+                          {activity.type === 'problem' && <BookOpen className="h-5 w-5 text-blue-500" />}
+                          {activity.type === 'solution' && <CheckCircle className="h-5 w-5 text-green-500" />}
+                          {activity.type === 'post' && <MessageSquare className="h-5 w-5 text-purple-500" />}
+                          {activity.type === 'comment' && <MessageSquare className="h-5 w-5 text-amber-500" />}
+                          {activity.type === 'badge' && <Award className="h-5 w-5 text-yellow-500" />}
                         </div>
                         <div className="flex-1">
                           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
                             <p className="font-medium">
-                              {activity.action === "created" && "새 문제를 등록했습니다"}
-                              {activity.action === "submitted" && "문제를 해결했습니다"}
-                              {activity.action === "commented" && "댓글을 작성했습니다"}
-                              {activity.action === "earned" && "배지를 획득했습니다"}
+                              {activity.action === 'created' && '새 문제를 등록했습니다'}
+                              {activity.action === 'submitted' && '문제를 해결했습니다'}
+                              {activity.action === 'commented' && '댓글을 작성했습니다'}
+                              {activity.action === 'earned' && '배지를 획득했습니다'}
                             </p>
                             <span className="text-sm text-muted-foreground">{activity.date}</span>
                           </div>
@@ -287,16 +287,16 @@ export default function UserProfilePage() {
 
 // 실제 구현에서는 username을 사용하여 사용자 데이터를 가져옵니다
 const userMock: User = {
-  username: "mathprofessor",
-  password: "password",
-  role: "user",
-  updatedAt: new Date("2023-01-15"),
-  nickname: "수학 교수",
-  profileImage: "/musical-performance.png",
-  bio: "수학과 교수로 미분방정식과 선형대수학을 가르치고 있습니다. 학생들의 질문에 답변하고 도움을 주는 것을 좋아합니다.",
-  major: "수학",
-  createdAt: new Date("2023-01-15"),
-  email: "math.professor@example.com",
+  username: 'mathprofessor',
+  password: 'password',
+  role: 'user',
+  updatedAt: new Date('2023-01-15'),
+  nickname: '수학 교수',
+  profileImage: '/musical-performance.png',
+  bio: '수학과 교수로 미분방정식과 선형대수학을 가르치고 있습니다. 학생들의 질문에 답변하고 도움을 주는 것을 좋아합니다.',
+  major: '수학',
+  createdAt: new Date('2023-01-15'),
+  email: 'math.professor@example.com',
 };
 
 const statsMock = {
@@ -309,48 +309,48 @@ const statsMock = {
 // 사용자가 작성한 문제 샘플 데이터
 const userProblems: Problem[] = [
   {
-    title: "미분방정식의 일반해 구하기",
-    categories: ["수학"],
+    title: '미분방정식의 일반해 구하기',
+    categories: ['수학'],
     author: userMock,
-    createdAt: new Date("2023-04-28"),
+    createdAt: new Date('2023-04-28'),
     likes: [userMock],
     comments: [],
     isSolved: true,
-    content: "미분방정식의 일반해를 구하는 문제입니다.",
-    tags: ["미분방정식"],
+    content: '미분방정식의 일반해를 구하는 문제입니다.',
+    tags: ['미분방정식'],
     attachments: [],
     viewCount: 0,
     aiResponse: null,
     aiResponseCreatedAt: null,
-    updatedAt: new Date("2023-04-28"),
+    updatedAt: new Date('2023-04-28'),
   },
   {
-    title: "뉴턴의 운동법칙 적용 문제",
-    categories: ["물리학"],
+    title: '뉴턴의 운동법칙 적용 문제',
+    categories: ['물리학'],
     author: userMock,
-    createdAt: new Date("2023-04-22"),
-    updatedAt: new Date("2023-04-22"),
+    createdAt: new Date('2023-04-22'),
+    updatedAt: new Date('2023-04-22'),
     likes: [userMock],
     comments: [],
     isSolved: true,
-    content: "뉴턴의 운동법칙을 적용하는 문제입니다.",
-    tags: ["뉴턴의 운동법칙"],
+    content: '뉴턴의 운동법칙을 적용하는 문제입니다.',
+    tags: ['뉴턴의 운동법칙'],
     attachments: [],
     viewCount: 0,
     aiResponse: null,
     aiResponseCreatedAt: null,
   },
   {
-    title: "유기화학 반응 메커니즘 설명",
-    categories: ["화학"],
+    title: '유기화학 반응 메커니즘 설명',
+    categories: ['화학'],
     author: userMock,
-    createdAt: new Date("2023-04-25"),
-    updatedAt: new Date("2023-04-25"),
+    createdAt: new Date('2023-04-25'),
+    updatedAt: new Date('2023-04-25'),
     likes: [userMock],
     comments: [],
     isSolved: true,
-    content: "유기화학 반응 메커니즘을 설명하는 문제입니다.",
-    tags: ["유기화학"],
+    content: '유기화학 반응 메커니즘을 설명하는 문제입니다.',
+    tags: ['유기화학'],
     attachments: [],
     viewCount: 0,
     aiResponse: null,
@@ -361,16 +361,16 @@ const userProblems: Problem[] = [
 // 사용자가 해결한 문제 샘플 데이터
 const solvedProblems: Problem[] = [
   {
-    title: "선형대수학 고유값 문제",
-    categories: ["수학"],
+    title: '선형대수학 고유값 문제',
+    categories: ['수학'],
     author: userMock,
-    createdAt: new Date("2023-04-28"),
-    updatedAt: new Date("2023-04-28"),
+    createdAt: new Date('2023-04-28'),
+    updatedAt: new Date('2023-04-28'),
     likes: [userMock],
     comments: [],
     isSolved: true,
-    content: "선형대수학 고유값 문제입니다.",
-    tags: ["선형대수학"],
+    content: '선형대수학 고유값 문제입니다.',
+    tags: ['선형대수학'],
     attachments: [],
     viewCount: 0,
     aiResponse: null,
@@ -385,37 +385,37 @@ const userPosts = [];
 const activityLog = [
   {
     id: 1,
-    type: "problem",
-    action: "created",
-    title: "미분방정식의 일반해 구하기",
-    date: "2023-04-28",
+    type: 'problem',
+    action: 'created',
+    title: '미분방정식의 일반해 구하기',
+    date: '2023-04-28',
   },
   {
     id: 2,
-    type: "solution",
-    action: "submitted",
-    title: "뉴턴의 운동법칙 적용 문제",
-    date: "2023-04-27",
+    type: 'solution',
+    action: 'submitted',
+    title: '뉴턴의 운동법칙 적용 문제',
+    date: '2023-04-27',
   },
   {
     id: 3,
-    type: "post",
-    action: "created",
-    title: "미분방정식 공부 방법 추천",
-    date: "2023-05-02",
+    type: 'post',
+    action: 'created',
+    title: '미분방정식 공부 방법 추천',
+    date: '2023-05-02',
   },
   {
     id: 4,
-    type: "comment",
-    action: "commented",
-    title: "유기화학 반응 메커니즘 설명",
-    date: "2023-04-26",
+    type: 'comment',
+    action: 'commented',
+    title: '유기화학 반응 메커니즘 설명',
+    date: '2023-04-26',
   },
   {
     id: 5,
-    type: "badge",
-    action: "earned",
-    title: "해결사 골드 배지",
-    date: "2023-04-25",
+    type: 'badge',
+    action: 'earned',
+    title: '해결사 골드 배지',
+    date: '2023-04-25',
   },
 ];

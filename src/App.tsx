@@ -22,7 +22,7 @@ import CookiePolicyPage from './components/footer/CookiePolicyPage';
 import FAQDetailPage from './components/footer/FAQDetailPage';
 import ContactUsPage from './components/footer/ContactUsPage';
 import ForgotPasswordPage from './page/ForgotPasswordPage';
-import ResetPasswordPage from './page/ResetPasswordPage';
+import ResetPasswordPage from './page/ResetPasswordPage/ResetPasswordPage';
 
 function App() {
   return (

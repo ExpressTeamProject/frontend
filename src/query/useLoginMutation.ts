@@ -1,11 +1,11 @@
 
 import { kyInstance, pushTokenToHeader } from '@/lib/kyInstance'
 import { User } from '@/models/User';
-import useLoginStore from '@/store/useLoginStore'
+import useUserStore from '@/store/useLoginStore'
 import { useMutation } from '@tanstack/react-query'
 
 function useLoginMutation() {
-  const { setToken, setUser } = useLoginStore();
+  const { setToken, setUser } = useUserStore();
 
   return (
     useMutation({
