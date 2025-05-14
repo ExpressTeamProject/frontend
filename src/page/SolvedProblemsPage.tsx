@@ -1,23 +1,23 @@
-import { Layout } from "../components/layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Input } from "../components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { Badge } from "../components/ui/badge";
-import { Button } from "../components/ui/button";
-import { CheckCircle, Search } from "lucide-react";
-import { PaginationQueryParams, usePagination } from "@/query/_common/usePagination";
-import { useProblemsQuery } from "@/query/useProblemsQuery";
-import { Problem } from "@/models/Problem";
-import { CATEGORIES } from "@/constants/categories";
-import { CircleSpinner } from "@/components/spinner";
-import useFilter from "@/query/_common/useFilter";
-import Pagination from "@/components/pagination";
-import { useState } from "react";
-import { SolutionModal } from "@/components/SolutionModal";
+import { Layout } from '../components/layout';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Input } from '../components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
+import { CheckCircle, Search } from 'lucide-react';
+import { PaginationQueryParams, usePagination } from '@/query/_common/usePagination';
+import { useProblemsQuery } from '@/query/useProblemsQuery';
+import { Problem } from '@/models/Problem';
+import { CATEGORIES } from '@/constants/categories';
+import { CircleSpinner } from '@/components/spinner';
+import useFilter from '@/query/_common/useFilter';
+import Pagination from '@/components/pagination';
+import { useState } from 'react';
+import { SolutionModal } from '@/components/SolutionModal';
 
 export default function SolvedProblemsPage() {
-  const pagination = usePagination({ page: 1, status: "solved" });
+  const pagination = usePagination({ page: 1, status: 'solved' });
   const filter = useFilter();
   const { data: solvedProblemsRes, isSuccess } = useProblemsQuery(pagination);
 
@@ -59,13 +59,13 @@ export default function SolvedProblemsPage() {
                 placeholder="해결된 문제 검색..."
                 className="pl-10 py-6 rounded-full border-gray-300 dark:border-gray-700 focus-visible:ring-teal-500"
                 value={pagination.search}
-                onChange={(e) => pagination.setSearch(e.target.value)}
+                onChange={e => pagination.setSearch(e.target.value)}
               />
             </div>
             <div className="flex gap-2">
               <Select
                 value={pagination.sort}
-                onValueChange={(value) => pagination.setSort((value as PaginationQueryParams["sort"])!)}
+                onValueChange={value => pagination.setSort((value as PaginationQueryParams['sort'])!)}
               >
                 <SelectTrigger className="w-[140px] rounded-full">
                   <SelectValue placeholder="정렬 기준" />
@@ -76,13 +76,13 @@ export default function SolvedProblemsPage() {
                   <SelectItem value="quality">품질순</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={Array.from(filter.categories)[0]} onValueChange={(value) => filter.toggleCategory(value)}>
+              <Select value={Array.from(filter.categories)[0]} onValueChange={value => filter.toggleCategory(value)}>
                 <SelectTrigger className="w-[140px] rounded-full">
                   <SelectValue placeholder="카테고리" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="전체">전체</SelectItem>
-                  {CATEGORIES.map((category) => (
+                  {CATEGORIES.map(category => (
                     <SelectItem key={category} value={category}>
                       {category}
                     </SelectItem>
@@ -93,7 +93,7 @@ export default function SolvedProblemsPage() {
           </div>
 
           <div className="grid gap-4">
-            {solvedProblems.map((problem) => (
+            {solvedProblems.map(problem => (
               <SolvedProblemCard key={problem.id} problem={problem} />
             ))}
           </div>
@@ -120,7 +120,7 @@ function SolvedProblemCard({ problem }: { problem: Problem }) {
         <div className="flex justify-between items-start">
           <div className="flex flex-col">
             <div className="flex flex-wrap gap-2">
-              {problem.categories.map((category) => (
+              {problem.categories.map(category => (
                 <Badge variant="outline" className="self-start mb-2 bg-gray-50 dark:bg-gray-800">
                   {category}
                 </Badge>
@@ -131,16 +131,6 @@ function SolvedProblemCard({ problem }: { problem: Problem }) {
             </CardTitle>
             <CardDescription className="mt-0.5 line-clamp-2">{problem.content}</CardDescription>
           </div>
-          {/* <Badge
-            className={`flex items-center gap-1 ${
-              qualityBadgeColors[problem.quality as keyof typeof qualityBadgeColors]
-            }`}
-          >
-            {qualityIcons[problem.quality as keyof typeof qualityIcons]}
-            <span>
-              {problem.quality === "gold" ? "최고 품질" : problem.quality === "silver" ? "우수 품질" : "일반 품질"}
-            </span>
-          </Badge> */}
         </div>
       </CardHeader>
       <CardContent>
@@ -149,7 +139,7 @@ function SolvedProblemCard({ problem }: { problem: Problem }) {
             <span className="text-sm text-muted-foreground">해결자:</span>
             <div className="flex items-center gap-2">
               <Avatar className="h-9 w-9">
-                <AvatarImage src={problem.author.profileImage || "/placeholder.svg"} alt={problem.author.nickname} />
+                <AvatarImage src={problem.author.profileImage || '/placeholder.svg'} alt={problem.author.nickname} />
                 <AvatarFallback>{problem.author.nickname.substring(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
               <span className="text-sm font-medium">{problem.author.nickname}</span>

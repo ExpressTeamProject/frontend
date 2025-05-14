@@ -1,8 +1,4 @@
-import useToggleLikeProblemMutation from './useToggleLikeProblemMutation';
-import useToggleSolvedStatusMutation from './useToggleSolvedStatusMutation';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
-
-import { useProblemDetailQuery } from '@/components/problem-detail/useProblemDetailQuery';
+import { useProblemDetailQuery } from './useProblemDetailQuery';
 import { Badge } from '../ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { MarkdownViewer } from '../markdown-viewer';
@@ -11,6 +7,9 @@ import { Button } from '../ui/button';
 import { CommentSection } from '../comment/comment-section';
 import { useState } from 'react';
 import ShareSuccessModal from '@/page/ShareSuccessPage';
+import { CircleSpinner } from '../spinner';
+import useToggleLikeProblemMutation from './useToggleLikeProblemMutation';
+import useToggleSolvedStatusMutation from './useToggleSolvedStatusMutation';
 
 function ProblemDetailCard({ problemId }: { problemId: string }) {
   const { data: problemRes, isSuccess } = useProblemDetailQuery(problemId || '0');
@@ -23,14 +22,27 @@ function ProblemDetailCard({ problemId }: { problemId: string }) {
     setShowShareSuccess(true);
   };
 
-  if (!isSuccess) return <div>Loading...</div>;
+  if (!isSuccess)
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700">
+          <div className="relative">
+            <div className="absolute -inset-4 rounded-full bg-teal-100 dark:bg-teal-900/30 blur-lg opacity-70"></div>
+            <CircleSpinner size="xl" color="teal" className="relative z-10" />
+          </div>
+          <p className="text-teal-600 dark:text-teal-400 font-medium mt-4">데이터를 불러오는 중입니다...</p>
+        </div>
+      </div>
+    );
+
   const problem = problemRes.data;
   return (
     <>
       {showShareSuccess && <ShareSuccessModal onComplete={() => setShowShareSuccess(false)} />}
-      <Card className="border-none shadow-lg dark:shadow-gray-800/30 overflow-hidden">
-        <CardHeader className="bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-800">
-          <div className="flex flex-wrap gap-2 mb-2">
+
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mb-8">
+        <div className="p-6 bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-700">
+          <div className="flex flex-wrap gap-2 mb-3">
             <Badge variant="outline" className="bg-white dark:bg-gray-800">
               {problem.categories.map(category => category).join(', ')}
             </Badge>
@@ -49,11 +61,10 @@ function ProblemDetailCard({ problemId }: { problemId: string }) {
               </Badge>
             )}
           </div>
-          <CardTitle className="text-2xl">{problem.title}</CardTitle>
-          <div className="flex items-center gap-2 mt-2">
+          <h1 className="text-2xl font-bold">{problem.title}</h1>
+          <div className="flex items-center gap-2 mt-3">
             <Avatar className="h-8 w-8 border-2 border-white dark:border-gray-800">
-              <AvatarImage src={'/placeholder.svg'} alt={problem.author.username} />{' '}
-              {/* TODO: author에 아바타 이미지 넣기 */}
+              <AvatarImage src={'/placeholder.svg'} alt={problem.author.username} />
               <AvatarFallback>{problem.author.username.substring(0, 2).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="text-sm">
@@ -61,12 +72,16 @@ function ProblemDetailCard({ problemId }: { problemId: string }) {
               <span className="text-gray-500 dark:text-gray-400">• {problem.createdAt?.toLocaleDateString?.()}</span>
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="p-6">
-          <MarkdownViewer content={problem.content} />
-        </CardContent>
-        <CardFooter className="flex justify-between border-t p-4 bg-gray-50 dark:bg-gray-900 dark:border-gray-800">
-          <div className="flex gap-4">
+        </div>
+
+        <div className="p-6">
+          <div className="prose dark:prose-invert max-w-none">
+            <MarkdownViewer content={problem.content} />
+          </div>
+        </div>
+
+        <div className="flex flex-wrap justify-between gap-y-3 p-4 border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+          <div className="flex flex-wrap gap-3">
             <Button
               variant="ghost"
               size="sm"
@@ -84,21 +99,21 @@ function ProblemDetailCard({ problemId }: { problemId: string }) {
               <MessageSquare className="h-4 w-4" />
               <span>댓글 ({problem.comments.length})</span>
             </Button>
-          </div>
-          <div className="flex gap-2">
             <Button
               variant={problem.isSolved ? 'default' : 'ghost'}
               size="sm"
               onClick={() => toggleSolvedStatus()}
-              className={`flex items-center gap-1 ${
+              className={`flex items-center gap-1.5 transition-all duration-200 ${
                 problem.isSolved
                   ? 'bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400 dark:hover:bg-green-900/50'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20'
               }`}
             >
               {problem.isSolved ? <CheckCircle className="h-4 w-4" /> : <Circle className="h-4 w-4" />}
               <span>{problem.isSolved ? '해결됨' : '해결 표시하기'}</span>
             </Button>
+          </div>
+          <div className="flex gap-2">
             <Button
               variant="ghost"
               size="sm"
@@ -117,11 +132,11 @@ function ProblemDetailCard({ problemId }: { problemId: string }) {
               <span>공유</span>
             </Button>
           </div>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
 
-      <div className="mt-8">
-        <h2 className="text-xl font-bold mb-4 flex items-center">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 className="text-xl font-bold mb-6 flex items-center">
           <MessageSquare className="mr-2 h-5 w-5 text-teal-500" />
           답변
         </h2>

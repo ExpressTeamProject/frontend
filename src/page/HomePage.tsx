@@ -1,51 +1,50 @@
-import { Link } from "react-router";
-import { Button } from "../components/ui/button";
-import { Card, CardContent } from "../components/ui/card";
-import { ProblemCard } from "../components/problem-card";
-import { SearchBar } from "../components/search-bar";
-import { CategoryFilter } from "../components/category-filter";
-import { BookOpen, Plus, TrendingUp, CheckCircle, Clock } from "lucide-react";
-import { Layout } from "../components/layout";
-import { useQuery } from "@tanstack/react-query";
-import { useProblemsQuery } from "@/query/useProblemsQuery";
+import { Link } from 'react-router';
+import { Button } from '../components/ui/button';
+import { Card, CardContent } from '../components/ui/card';
+import { ProblemCard } from '../components/problem-card';
+import { SearchBar } from '../components/search-bar';
+import { CategoryFilter } from '../components/category-filter';
+import { BookOpen, Plus, TrendingUp, CheckCircle, Clock } from 'lucide-react';
+import { Layout } from '../components/layout';
+import { useProblemsQuery } from '@/query/useProblemsQuery';
 // 샘플 문제 데이터
 const problemsSample = [
   {
     id: 1,
-    title: "미분방정식의 일반해 구하기",
-    category: "수학",
-    author: "mathprofessor",
-    date: "2023-04-28",
+    title: '미분방정식의 일반해 구하기',
+    category: '수학',
+    author: 'mathprofessor',
+    date: '2023-04-28',
     likes: 24,
     comments: 8,
     solved: true,
   },
   {
     id: 2,
-    title: "뉴턴의 운동법칙 적용 문제",
-    category: "물리학",
-    author: "physicslover",
-    date: "2023-04-27",
+    title: '뉴턴의 운동법칙 적용 문제',
+    category: '물리학',
+    author: 'physicslover',
+    date: '2023-04-27',
     likes: 18,
     comments: 5,
     solved: false,
   },
   {
     id: 3,
-    title: "알고리즘 복잡도 분석 문제",
-    category: "컴퓨터공학",
-    author: "codemaster",
-    date: "2023-04-26",
+    title: '알고리즘 복잡도 분석 문제',
+    category: '컴퓨터공학',
+    author: 'codemaster',
+    date: '2023-04-26',
     likes: 32,
     comments: 12,
     solved: true,
   },
   {
     id: 4,
-    title: "유기화학 반응 메커니즘 설명",
-    category: "화학",
-    author: "chemistrywhiz",
-    date: "2023-04-25",
+    title: '유기화학 반응 메커니즘 설명',
+    category: '화학',
+    author: 'chemistrywhiz',
+    date: '2023-04-25',
     likes: 15,
     comments: 3,
     solved: false,
@@ -54,12 +53,12 @@ const problemsSample = [
 
 // 인기 카테고리
 const popularCategories = [
-  { name: "수학", icon: "📊", color: "bg-blue-100 dark:bg-blue-900" },
-  { name: "물리학", icon: "🔭", color: "bg-purple-100 dark:bg-purple-900" },
-  { name: "컴퓨터공학", icon: "💻", color: "bg-green-100 dark:bg-green-900" },
-  { name: "화학", icon: "🧪", color: "bg-yellow-100 dark:bg-yellow-900" },
-  { name: "생물학", icon: "🧬", color: "bg-red-100 dark:bg-red-900" },
-  { name: "전자공학", icon: "⚡", color: "bg-orange-100 dark:bg-orange-900" },
+  { name: '수학', icon: '📊', color: 'bg-blue-100 dark:bg-blue-900' },
+  { name: '물리학', icon: '🔭', color: 'bg-purple-100 dark:bg-purple-900' },
+  { name: '컴퓨터공학', icon: '💻', color: 'bg-green-100 dark:bg-green-900' },
+  { name: '화학', icon: '🧪', color: 'bg-yellow-100 dark:bg-yellow-900' },
+  { name: '생물학', icon: '🧬', color: 'bg-red-100 dark:bg-red-900' },
+  { name: '전자공학', icon: '⚡', color: 'bg-orange-100 dark:bg-orange-900' },
 ];
 
 export default function HomePage() {
@@ -99,7 +98,7 @@ export default function HomePage() {
           <div className="container px-4 md:px-8 max-w-full mx-auto">
             <h2 className="text-2xl font-bold text-center mb-8">인기 카테고리</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {popularCategories.map((category) => (
+              {popularCategories.map(category => (
                 <Link to={`/category/${category.name}`} key={category.name}>
                   <div
                     className={`${category.color} rounded-xl p-4 text-center hover:shadow-md transition-all duration-300 h-full flex flex-col items-center justify-center`}
@@ -135,15 +134,15 @@ export default function HomePage() {
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      "미분방정식",
-                      "알고리즘",
-                      "양자역학",
-                      "유기화학",
-                      "데이터구조",
-                      "열역학",
-                      "선형대수",
-                      "통계학",
-                    ].map((tag) => (
+                      '미분방정식',
+                      '알고리즘',
+                      '양자역학',
+                      '유기화학',
+                      '데이터구조',
+                      '열역학',
+                      '선형대수',
+                      '통계학',
+                    ].map(tag => (
                       <Link to={`/tag/${tag}`} key={tag}>
                         <div className="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-3 py-1 rounded-full text-sm transition-colors">
                           #{tag}
@@ -173,7 +172,7 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="grid gap-4">
-                {isSuccess && problems.data.map((problem) => <ProblemCard key={problem.id} problem={problem} />)}
+                {isSuccess && problems.data.map(problem => <ProblemCard key={problem.id} problem={problem} />)}
               </div>
               <div className="flex justify-center mt-8">
                 <Link to="/problems">

@@ -1,67 +1,62 @@
-import { useState } from "react";
-import { Link } from "react-router";
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
+import { Link } from 'react-router';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { ArrowLeft } from 'lucide-react';
-import { Layout } from "../../components/layout";
-import { MarkdownEditor } from "../../components/markdown-editor";
-import { TagInput } from "../../components/tag-input";
-import { FileUpload } from "../../components/file-upload";
-import { VoiceInputButton } from "../VoiceInputButton";
-import useNewProblemMutation from "./useNewProblemMutation";
+import { Layout } from '../../components/layout';
+import { MarkdownEditor } from '../../components/markdown-editor';
+import { TagInput } from '../../components/tag-input';
+import { FileUpload } from '../../components/file-upload';
+import { VoiceInputButton } from '../VoiceInputButton';
+import useNewProblemMutation from './useNewProblemMutation';
 
-export default function NewProblemPage() {
+export default (function NewProblemPage() {
   const { mutate: createNewProblem, formData, setFormData } = useNewProblemMutation();
-  
-  const [lastTranscript, setLastTranscript] = useState("");
 
   // 추천 태그 목록 (실제 구현에서는 API에서 가져옴)
-  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleContentChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, content: value }));
+    setFormData(prev => ({ ...prev, content: value }));
   };
 
   const handleTagsChange = (tags: string[]) => {
-    setFormData((prev) => ({ ...prev, tags }));
+    setFormData(prev => ({ ...prev, tags }));
   };
 
   const handleCategoryChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, category: value }));
+    setFormData(prev => ({ ...prev, category: value }));
   };
 
   const handleFilesUpload = (files: File[]) => {
-    setFormData((prev) => ({ ...prev, files }));
+    setFormData(prev => ({ ...prev, files }));
   };
 
   const handleFileRemove = (file: File) => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
-      files: prev.files.filter((f) => f !== file),
+      files: prev.files.filter(f => f !== file),
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // 문제 등록 로직 구현
-    console.log("Problem submission:", formData);
+    console.log('Problem submission:', formData);
     createNewProblem(formData);
   };
 
   // 음성 인식 결과 처리
   const handleTranscriptReceived = (transcript: string) => {
-    setLastTranscript(transcript);
-    setFormData((prev) => ({ 
-      ...prev, 
-      content: prev.content ? `${prev.content} ${transcript}` : transcript 
+    setFormData(prev => ({
+      ...prev,
+      content: prev.content ? `${prev.content} ${transcript}` : transcript,
     }));
   };
 
@@ -118,13 +113,15 @@ export default function NewProblemPage() {
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor="content" className="text-base font-medium">문제 내용</Label>
-                    
+                    <Label htmlFor="content" className="text-base font-medium">
+                      문제 내용
+                    </Label>
+
                     <div className="flex items-center gap-3">
                       <VoiceInputButton onTranscriptReceived={handleTranscriptReceived} />
                     </div>
                   </div>
-            
+
                   <MarkdownEditor
                     value={formData.content}
                     onChange={handleContentChange}
@@ -174,42 +171,42 @@ export default function NewProblemPage() {
       </main>
     </Layout>
   );
-}
+});
 
 const suggestedTags = [
-  "미분방정식",
-  "선형대수",
-  "확률론",
-  "통계학",
-  "해석학",
-  "대수학",
-  "기하학",
-  "위상수학",
-  "이산수학",
-  "수치해석",
-  "양자역학",
-  "전자기학",
-  "열역학",
-  "유체역학",
-  "광학",
-  "상대성이론",
-  "입자물리학",
-  "천체물리학",
-  "유기화학",
-  "무기화학",
-  "물리화학",
-  "분석화학",
-  "생화학",
-  "고분자화학",
-  "알고리즘",
-  "자료구조",
-  "운영체제",
-  "컴퓨터네트워크",
-  "데이터베이스",
-  "인공지능",
-  "기계학습",
-  "컴퓨터비전",
-  "자연어처리",
-  "웹개발",
-  "모바일개발",
+  '미분방정식',
+  '선형대수',
+  '확률론',
+  '통계학',
+  '해석학',
+  '대수학',
+  '기하학',
+  '위상수학',
+  '이산수학',
+  '수치해석',
+  '양자역학',
+  '전자기학',
+  '열역학',
+  '유체역학',
+  '광학',
+  '상대성이론',
+  '입자물리학',
+  '천체물리학',
+  '유기화학',
+  '무기화학',
+  '물리화학',
+  '분석화학',
+  '생화학',
+  '고분자화학',
+  '알고리즘',
+  '자료구조',
+  '운영체제',
+  '컴퓨터네트워크',
+  '데이터베이스',
+  '인공지능',
+  '기계학습',
+  '컴퓨터비전',
+  '자연어처리',
+  '웹개발',
+  '모바일개발',
 ];
