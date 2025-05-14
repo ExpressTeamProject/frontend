@@ -15,6 +15,7 @@ import useFilter from '@/query/_common/useFilter';
 import Pagination from '@/components/pagination';
 import { useState } from 'react';
 import { SolutionModal } from '@/components/SolutionModal';
+import { Link } from 'react-router';
 
 export default function SolvedProblemsPage() {
   const pagination = usePagination({ page: 1, status: 'solved' });
@@ -127,7 +128,7 @@ function SolvedProblemCard({ problem }: { problem: Problem }) {
               ))}
             </div>
             <CardTitle className="text-xl hover:text-teal-500 transition-colors">
-              <a href={`/problems/${problem.id}`}>{problem.title}</a>
+              <Link to={`/problems/${problem.id}`}>{problem.title}</Link>
             </CardTitle>
             <CardDescription className="mt-0.5 line-clamp-2">{problem.content}</CardDescription>
           </div>
