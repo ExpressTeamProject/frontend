@@ -7,49 +7,6 @@ import { CategoryFilter } from '../components/category-filter';
 import { BookOpen, Plus, TrendingUp, CheckCircle, Clock } from 'lucide-react';
 import { Layout } from '../components/layout';
 import { useProblemsQuery } from '@/query/useProblemsQuery';
-// 샘플 문제 데이터
-const problemsSample = [
-  {
-    id: 1,
-    title: '미분방정식의 일반해 구하기',
-    category: '수학',
-    author: 'mathprofessor',
-    date: '2023-04-28',
-    likes: 24,
-    comments: 8,
-    solved: true,
-  },
-  {
-    id: 2,
-    title: '뉴턴의 운동법칙 적용 문제',
-    category: '물리학',
-    author: 'physicslover',
-    date: '2023-04-27',
-    likes: 18,
-    comments: 5,
-    solved: false,
-  },
-  {
-    id: 3,
-    title: '알고리즘 복잡도 분석 문제',
-    category: '컴퓨터공학',
-    author: 'codemaster',
-    date: '2023-04-26',
-    likes: 32,
-    comments: 12,
-    solved: true,
-  },
-  {
-    id: 4,
-    title: '유기화학 반응 메커니즘 설명',
-    category: '화학',
-    author: 'chemistrywhiz',
-    date: '2023-04-25',
-    likes: 15,
-    comments: 3,
-    solved: false,
-  },
-];
 
 // 인기 카테고리
 const popularCategories = [
@@ -99,14 +56,12 @@ export default function HomePage() {
             <h2 className="text-2xl font-bold text-center mb-8">인기 카테고리</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {popularCategories.map(category => (
-                <Link to={`/category/${category.name}`} key={category.name}>
-                  <div
-                    className={`${category.color} rounded-xl p-4 text-center hover:shadow-md transition-all duration-300 h-full flex flex-col items-center justify-center`}
-                  >
-                    <div className="text-3xl mb-2">{category.icon}</div>
-                    <div className="font-medium">{category.name}</div>
-                  </div>
-                </Link>
+                <div
+                  className={`${category.color} rounded-xl p-4 text-center hover:shadow-md transition-all duration-300 h-full flex flex-col items-center justify-center`}
+                >
+                  <div className="text-3xl mb-2">{category.icon}</div>
+                  <div className="font-medium">{category.name}</div>
+                </div>
               ))}
             </div>
           </div>
@@ -122,7 +77,7 @@ export default function HomePage() {
                     <BookOpen className="mr-2 h-5 w-5 text-teal-500" />
                     카테고리
                   </h3>
-                  <CategoryFilter />
+                  <CategoryFilter onFilterChange={() => {}} />
                 </CardContent>
               </Card>
 
@@ -143,11 +98,9 @@ export default function HomePage() {
                       '선형대수',
                       '통계학',
                     ].map(tag => (
-                      <Link to={`/tag/${tag}`} key={tag}>
-                        <div className="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-3 py-1 rounded-full text-sm transition-colors">
-                          #{tag}
-                        </div>
-                      </Link>
+                      <div className="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-3 py-1 rounded-full text-sm transition-colors">
+                        #{tag}
+                      </div>
                     ))}
                   </div>
                 </CardContent>

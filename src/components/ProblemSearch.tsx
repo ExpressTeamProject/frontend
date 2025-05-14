@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { Search } from "lucide-react";
-import { ProblemFilter } from "./ProblemFilter";
+import { useState } from 'react';
+import { Search } from 'lucide-react';
+import { ProblemFilter } from './ProblemFilter';
 
 interface ProblemSearchProps {
   onSearch: (query: string, categories: string[]) => void;
 }
 
 export function ProblemSearch({ onSearch }: ProblemSearchProps) {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -33,7 +33,7 @@ export function ProblemSearch({ onSearch }: ProblemSearchProps) {
         <input
           type="text"
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={e => setSearchQuery(e.target.value)}
           placeholder="문제 검색..."
           className="w-full px-4 py-3 pl-12 rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
         />

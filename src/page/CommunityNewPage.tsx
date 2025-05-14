@@ -1,91 +1,91 @@
-import type React from "react";
-import { useState } from "react";
-import { Layout } from "../components/layout";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { ArrowLeft } from "lucide-react";
-import { Link, useNavigate } from "react-router";
-import { MarkdownEditor } from "../components/markdown-editor";
-import { TagInput } from "../components/tag-input";
-import { FileUpload } from "../components/file-upload";
+import type React from 'react';
+import { useState } from 'react';
+import { Layout } from '../components/layout';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { ArrowLeft } from 'lucide-react';
+import { Link, useNavigate } from 'react-router';
+import { MarkdownEditor } from '../components/markdown-editor';
+import { TagInput } from '../components/tag-input';
+import { FileUpload } from '../components/file-upload';
 
 export default function CommunityNewPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    title: "",
-    category: "",
-    content: "",
+    title: '',
+    category: '',
+    content: '',
     tags: [] as string[],
     files: [] as File[],
   });
 
   // 추천 태그 목록 (실제 구현에서는 API에서 가져옴)
   const suggestedTags = [
-    "질문",
-    "정보공유",
-    "스터디모집",
-    "프로젝트",
-    "취업",
-    "대학원",
-    "수학",
-    "물리학",
-    "화학",
-    "생물학",
-    "컴퓨터공학",
-    "전자공학",
-    "기계공학",
-    "경영학",
-    "경제학",
-    "심리학",
-    "사회학",
-    "인문학",
-    "예술",
-    "교육",
-    "의학",
-    "약학",
-    "간호학",
-    "법학",
-    "행정학",
+    '질문',
+    '정보공유',
+    '스터디모집',
+    '프로젝트',
+    '취업',
+    '대학원',
+    '수학',
+    '물리학',
+    '화학',
+    '생물학',
+    '컴퓨터공학',
+    '전자공학',
+    '기계공학',
+    '경영학',
+    '경제학',
+    '심리학',
+    '사회학',
+    '인문학',
+    '예술',
+    '교육',
+    '의학',
+    '약학',
+    '간호학',
+    '법학',
+    '행정학',
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleContentChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, content: value }));
+    setFormData(prev => ({ ...prev, content: value }));
   };
 
   const handleTagsChange = (tags: string[]) => {
-    setFormData((prev) => ({ ...prev, tags }));
+    setFormData(prev => ({ ...prev, tags }));
   };
 
   const handleCategoryChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, category: value }));
+    setFormData(prev => ({ ...prev, category: value }));
   };
 
   const handleFilesUpload = (files: File[]) => {
-    setFormData((prev) => ({ ...prev, files }));
+    setFormData(prev => ({ ...prev, files }));
   };
 
   const handleFileRemove = (file: File) => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
-      files: prev.files.filter((f) => f !== file),
+      files: prev.files.filter(f => f !== file),
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // 실제 구현에서는 API 호출로 데이터 저장
-    console.log("커뮤니티 글 작성:", formData);
+    console.log('커뮤니티 글 작성:', formData);
 
     // 제출 후 커뮤니티 페이지로 이동
-    navigate("/community");
+    navigate('/community');
   };
 
   return (
