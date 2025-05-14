@@ -1,15 +1,31 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageSquare, ThumbsUp } from "lucide-react";
-import { Link } from "react-router";
+import Pagination from '@/components/pagination';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { MessageSquare, ThumbsUp } from 'lucide-react';
+import { useState } from 'react';
+import { Link } from 'react-router';
 
+const tabCategoryMapper: Record<string, string> = {
+  all: '전체',
+  question: '질문',
+  recruit: '모집',
+  info: '정보',
+  review: '후기',
+};
 function ArticleContainer({ posts }: { posts: any[] }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentTab, setCurrentTab] = useState('all');
+
+  const filteredPosts = posts.filter(post => currentTab === 'all' || post.category === tabCategoryMapper[currentTab]);
+  const lastPage = Math.ceil(Math.ceil(filteredPosts.length / 5));
+  const currentPosts = filteredPosts.slice((currentPage - 1) * 5, currentPage * 5);
+
   return (
     <div className="flex-1">
-      <Tabs defaultValue="all" className="mb-6">
+      <Tabs defaultValue="all" className="mb-6" value={currentTab} onValueChange={setCurrentTab}>
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="all">전체</TabsTrigger>
           <TabsTrigger value="question">질문</TabsTrigger>
@@ -19,43 +35,43 @@ function ArticleContainer({ posts }: { posts: any[] }) {
         </TabsList>
         <TabsContent value="all" className="mt-4">
           <div className="grid gap-4">
-            {posts.map((post) => (
+            {currentPosts.map(post => (
               <CommunityPostCard key={post.id} post={post} categoryColors={categoryColors} />
             ))}
           </div>
         </TabsContent>
         <TabsContent value="question" className="mt-4">
           <div className="grid gap-4">
-            {posts
-              .filter((post) => post.category === "질문")
-              .map((post) => (
+            {currentPosts
+              // .filter(post => post.category === '질문')
+              .map(post => (
                 <CommunityPostCard key={post.id} post={post} categoryColors={categoryColors} />
               ))}
           </div>
         </TabsContent>
         <TabsContent value="recruit" className="mt-4">
           <div className="grid gap-4">
-            {posts
-              .filter((post) => post.category === "모집")
-              .map((post) => (
+            {currentPosts
+              .filter(post => post.category === '모집')
+              .map(post => (
                 <CommunityPostCard key={post.id} post={post} categoryColors={categoryColors} />
               ))}
           </div>
         </TabsContent>
         <TabsContent value="info" className="mt-4">
           <div className="grid gap-4">
-            {posts
-              .filter((post) => post.category === "정보")
-              .map((post) => (
+            {currentPosts
+              .filter(post => post.category === '정보')
+              .map(post => (
                 <CommunityPostCard key={post.id} post={post} categoryColors={categoryColors} />
               ))}
           </div>
         </TabsContent>
         <TabsContent value="review" className="mt-4">
           <div className="grid gap-4">
-            {posts
-              .filter((post) => post.category === "후기")
-              .map((post) => (
+            {currentPosts
+              .filter(post => post.category === '후기')
+              .map(post => (
                 <CommunityPostCard key={post.id} post={post} categoryColors={categoryColors} />
               ))}
           </div>
@@ -63,53 +79,7 @@ function ArticleContainer({ posts }: { posts: any[] }) {
       </Tabs>
 
       {/* 페이지네이션 */}
-      <div className="flex justify-center mt-8">
-        <nav className="flex items-center gap-1">
-          <Button variant="outline" size="icon" className="rounded-full">
-            <span className="sr-only">이전 페이지</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
-            >
-              <path d="m15 18-6-6 6-6" />
-            </svg>
-          </Button>
-          <Button variant="outline" size="sm" className="rounded-full bg-primary text-primary-foreground">
-            1
-          </Button>
-          <Button variant="outline" size="sm" className="rounded-full">
-            2
-          </Button>
-          <Button variant="outline" size="sm" className="rounded-full">
-            3
-          </Button>
-          <Button variant="outline" size="icon" className="rounded-full">
-            <span className="sr-only">다음 페이지</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
-            >
-              <path d="m9 18 6-6-6-6" />
-            </svg>
-          </Button>
-        </nav>
-      </div>
+      <Pagination currentPage={currentPage} lastPage={lastPage} onPageChange={setCurrentPage} />
     </div>
   );
 }
@@ -122,7 +92,7 @@ function CommunityPostCard({ post, categoryColors }: { post: any; categoryColors
         <div className="flex justify-between items-start">
           <div className="flex items-center gap-2">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={post.authorAvatar || "/placeholder.svg"} alt={post.author} />
+              <AvatarImage src={post.authorAvatar || '/placeholder.svg'} alt={post.author} />
               <AvatarFallback>{post.author.substring(0, 2).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div>
@@ -164,10 +134,10 @@ function CommunityPostCard({ post, categoryColors }: { post: any; categoryColors
 
 // 카테고리별 색상
 const categoryColors = {
-  질문: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-  모집: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
-  정보: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-  후기: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300",
+  질문: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+  모집: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
+  정보: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+  후기: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300',
 };
 
 export default ArticleContainer;
