@@ -13,6 +13,8 @@ import { CATEGORIES } from "@/constants/categories";
 import { CircleSpinner } from "@/components/spinner";
 import useFilter from "@/query/_common/useFilter";
 import Pagination from "@/components/pagination";
+import { useState } from "react";
+import { SolutionModal } from "@/components/SolutionModal";
 
 export default function SolvedProblemsPage() {
   const pagination = usePagination({ page: 1, status: "solved" });
@@ -110,6 +112,8 @@ export default function SolvedProblemsPage() {
 
 // 해결된 문제 카드 컴포넌트
 function SolvedProblemCard({ problem }: { problem: Problem }) {
+  const [showSolution, setShowSolution] = useState(false);
+
   return (
     <Card className="overflow-hidden border-none shadow-md hover:shadow-lg dark:shadow-gray-800/30 transition-all duration-300">
       <CardHeader className="pb-2">
@@ -170,12 +174,13 @@ function SolvedProblemCard({ problem }: { problem: Problem }) {
               </svg>
               <span>{problem.likeCount}</span>
             </Button>
-            <Button variant="outline" size="sm" className="rounded-full">
+            <Button variant="outline" size="sm" className="rounded-full" onClick={() => setShowSolution(true)}>
               해결책 보기
             </Button>
           </div>
         </div>
       </CardContent>
+      <SolutionModal isOpen={showSolution} onClose={() => setShowSolution(false)} problem={problem} />
     </Card>
   );
 }

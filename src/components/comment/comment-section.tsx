@@ -15,10 +15,12 @@ import useToggleLikeCommentMutation from "./useToggleLikeCommentMutation";
 
 interface CommentSectionProps {
   problemId: Problem["id"];
+  hasNewComment?: boolean;
+  hasReply?: boolean;
 }
 
 
-export function CommentSection({ problemId }: CommentSectionProps) {
+export function CommentSection({ problemId, hasNewComment = true, hasReply = true }: CommentSectionProps) {
   const { data: comments, isSuccess } = useCommentByProblemIdQuery(problemId);
   const { mutate: createNewComment } = useNewCommentMutation();
   const { mutate: createNewReply } = useNewReplyMutation();
@@ -152,7 +154,7 @@ export function CommentSection({ problemId }: CommentSectionProps) {
             )}
 
             {/* 답글 작성 폼 */}
-            {replyingTo === comment.id && (
+            {hasReply !== false && replyingTo === comment.id && (
               <div className="ml-12 mt-2">
                 <Card>
                   <CardContent className="p-4">
@@ -195,26 +197,28 @@ export function CommentSection({ problemId }: CommentSectionProps) {
         ))}
       </div>
 
-      <form onSubmit={handleSubmitComment} className="mt-6">
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">답변 작성</h3>
-          <MarkdownEditor
-            value={newComment}
-            onChange={setNewComment}
-            placeholder="답변을 작성해주세요..."
-            height={200}
-          />
-          <div className="flex justify-end">
-            <Button
-              type="submit"
-              disabled={!newComment.trim()}
-              className="bg-teal-500 hover:bg-teal-600 transition-colors"
-            >
-              답변 등록
-            </Button>
+      {hasNewComment && (
+        <form onSubmit={handleSubmitComment} className="mt-6">
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">답변 작성</h3>
+            <MarkdownEditor
+              value={newComment}
+              onChange={setNewComment}
+              placeholder="답변을 작성해주세요..."
+              height={200}
+            />
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                disabled={!newComment.trim()}
+                className="bg-teal-500 hover:bg-teal-600 transition-colors"
+              >
+                답변 등록
+              </Button>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      )}
     </div>
   );
 }

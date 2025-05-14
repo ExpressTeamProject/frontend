@@ -5,8 +5,6 @@ import { SlidersHorizontal } from "lucide-react";
 
 function FilterSidebar({
   showFilters,
-  selectedStatus,
-  handleStatusChange,
   toggleCategory: handleCategoryChange,
   toggleTag: handleTagChange,
   popularTags,
