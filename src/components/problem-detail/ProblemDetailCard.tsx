@@ -2,7 +2,7 @@ import { useProblemDetailQuery } from './useProblemDetailQuery';
 import { Badge } from '../ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { MarkdownViewer } from '../markdown-viewer';
-import { Bookmark, CheckCircle, Circle, MessageSquare, Share2, ThumbsUp } from 'lucide-react';
+import { Bookmark, CheckCircle, Circle, Edit2, MessageSquare, Share2, ThumbsUp, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { CommentSection } from '../comment/comment-section';
 import { useState } from 'react';
@@ -10,16 +10,28 @@ import ShareSuccessModal from '@/page/ShareSuccessPage';
 import { CircleSpinner } from '../spinner';
 import useToggleLikeProblemMutation from './useToggleLikeProblemMutation';
 import useToggleSolvedStatusMutation from './useToggleSolvedStatusMutation';
+import { useNavigate } from 'react-router';
 
 function ProblemDetailCard({ problemId }: { problemId: string }) {
   const { data: problemRes, isSuccess } = useProblemDetailQuery(problemId || '0');
   const { mutate: toggleLikeProblem } = useToggleLikeProblemMutation(problemId || '0');
   const { mutate: toggleSolvedStatus } = useToggleSolvedStatusMutation(problemId || '0');
+  const navigate = useNavigate();
 
   const [showShareSuccess, setShowShareSuccess] = useState(false);
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
     setShowShareSuccess(true);
+  };
+
+  const handleEdit = () => {
+    // 수정 페이지로 이동
+    navigate(`/problems/${problemId}/edit`);
+  };
+
+  const handleDelete = () => {
+    // 삭제 확인 및 처리 로직
+    console.log('삭제 버튼 클릭');
   };
 
   if (!isSuccess)
@@ -130,6 +142,28 @@ function ProblemDetailCard({ problemId }: { problemId: string }) {
             >
               <Share2 className="h-4 w-4" />
               <span>공유</span>
+            </Button>
+
+            {/* 수정 버튼 */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-1 text-blue-600 hover:bg-blue-50 hover:text-blue-700 dark:text-blue-400 dark:hover:bg-blue-900/20"
+              onClick={handleEdit}
+            >
+              <Edit2 className="h-4 w-4" />
+              <span>수정</span>
+            </Button>
+
+            {/* 삭제 버튼 */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-1 text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-900/20"
+              onClick={handleDelete}
+            >
+              <Trash2 className="h-4 w-4" />
+              <span>삭제</span>
             </Button>
           </div>
         </div>

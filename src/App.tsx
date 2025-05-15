@@ -23,6 +23,7 @@ import FAQDetailPage from './components/footer/FAQDetailPage';
 import ContactUsPage from './components/footer/ContactUsPage';
 import ForgotPasswordPage from './page/ForgotPasswordPage';
 import ResetPasswordPage from './page/ResetPasswordPage/ResetPasswordPage';
+import EditProblemPage from './components/problem-detail/EditProblemPage';
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
       <Route path="/contact" element={<ContactUsPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/settings/password" element={<ResetPasswordPage />} />
+      <Route path="/problems/:id/edit" element={<EditProblemPage />} />
     </Routes>
   );
 }
